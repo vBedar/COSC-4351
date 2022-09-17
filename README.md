@@ -7,7 +7,7 @@ setup virtual environment in the terminal:
 
 python -m venv venv
 
-    or 
+or 
 
 python3 -m venv venv
 
