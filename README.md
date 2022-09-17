@@ -1,5 +1,5 @@
 # COSC-4351
-vBedar - Victoria Bedar, 
+vBedar - Victoria Bedar, Dylan Lewis
 
 Setting up project:
 
