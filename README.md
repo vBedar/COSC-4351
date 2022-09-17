@@ -16,3 +16,7 @@ activating virtual environment
 (windows)   venv\Scripts\activate
 
 (mac)   source venv/bin/activate
+
+With the virtual environment (VE) active, install django.
+
+pip install django.
