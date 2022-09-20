@@ -1,5 +1,5 @@
 # COSC-4351
-vBedar - Victoria Bedar, Dylan Lewis
+vBedar - Victoria Bedar, Dylan Lewis, and Dunjiang Zhang(Kenny)
 
 Setting up project:
 
