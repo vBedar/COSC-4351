@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-#from .models import Profile
+from .models import RegisteredUser, UserForm
 # Create your views here.
 
 @login_required(login_url='signin')
@@ -73,3 +73,9 @@ def logout(request):
     return redirect('signin')
 
 
+def profile(request):
+    form = UserForm()
+    context = {
+        'form':form,
+    }
+    return render(request, 'clientDetail.html', context)
