@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy
+from django.utils import timezone
 
 # Create your models here.
 User = get_user_model()
@@ -28,5 +29,19 @@ class Profile (models.Model):
     BCity = models.CharField(max_length = 100)
     BState = models.CharField(max_length = 40)
     BZip = models.CharField(max_length = 9)
+
+#Reservation Model
+class Reservation (models.Model):
+    Name = models.CharField(max_length=100)
+    Phone = models.CharField(max_length=20)
+    Email = models.CharField(max_length=100)
+    Time = models.DateTimeField()
+    GuestNum = models.PositiveIntegerField()
+    HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
+
+#Table Model
+class Table (models.Model):
+    Capacity = models.PositiveIntegerField(default=2)
+    isReserved = models.BooleanField(default=False)
 
 # Create your models here.
