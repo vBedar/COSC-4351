@@ -88,7 +88,7 @@ def setting(request):
     user_profile = Profile.objects.get(user=request.user)
     if request.method == 'POST':
         name = request.POST['Name']
-        dinerNum = request.POST['DinerNum']
+        #dinerNum = request.POST['DinerNum'] #Shouldn't be in the form these are system generated ~ Victoria Bedar
         payment = request.POST['Payment']
         shippingAd = request.POST['ShippingAd']
         shipCity = request.POST['ShipCity']
@@ -99,7 +99,7 @@ def setting(request):
         billZipcode = request.POST['BillZipCode']
         billstates = request.POST['states2']
         user_profile.Name = name
-        user_profile.DinerNum = dinerNum
+        #user_profile.DinerNum = dinerNum
         user_profile.PaymentMethod = payment
         user_profile.MstAddress = shippingAd
         user_profile.MCity = shipCity

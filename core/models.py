@@ -13,9 +13,9 @@ from django.utils.translation import gettext_lazy
 User = get_user_model()
 #RegisteredUser Model
 class Profile (models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True) #Should be OnetoOne. I don't think it's possible for a User to have more than one profile ~ Victoria Bedar
     Name = models.CharField(max_length = 100)
-    Points = models.PositiveIntegerField(max_length = 100, default=0)
+    Points = models.PositiveIntegerField(default=0)
     DinerNum = models.PositiveIntegerField(null = True)
     PaymentMethod = models.CharField(max_length = 50, null = True)
     #Address Details M stands for "Mail"

@@ -23,14 +23,20 @@
         <br>
         <input type="text" id="Name" name="Name" value="{{user_profile.Name}}">
         <br>
-        <label for="DinerNum">Favorite Diner Number:</label>
+        <!--<label for="DinerNum">Favorite Diner Number:</label>
         <br>
         <input type="text" id="DinerNum" name="DinerNum" value="{{user_profile.DinerNum}}">
-        <br>
+        <br> Shouldn't be in the form this is system generated-->
         <label for="Payment">Payment Method: </label>
         <br>
-        <input type="text" id="Payment" name="Payment" value="{{user_profile.PaymentMethod}}">
-        <br>
+        <!---<input type="text" id="Payment" name="Payment" value="{{user_profile.PaymentMethod}}">-->
+        <select name="Payment" id="Payment">
+            <option value="{{user_profile.PaymentMethod}}">{{user_profile.PaymentMethod}}</option>
+            <option value="cash">Cash</option>
+            <option value="credit">Card</option>
+            <option value="check">Check</option>
+        </select>
+        <br> 
         <br>
         <br>
         <br>
@@ -94,12 +100,12 @@
                 <option value="TN">Tennessee (TN)</option>
                 <option value="TX">Texas (TX)</option>
                 <option value="UT">Utah (UT)</option>
-                <option value="VT">Vermont</option>
-                <option value="VA">Virginia</option>
-                <option value="WA">Washington</option>
-                <option value="WV">West Virginia</option>
-                <option value="WI">Wisconsin</option>
-                <option value="WY">Wyoming</option>
+                <option value="VT">Vermont (VT)</option>
+                <option value="VA">Virginia (VA)</option>
+                <option value="WA">Washington (WA)</option>
+                <option value="WV">West Virginia (WV)</option>
+                <option value="WI">Wisconsin (WI)</option>
+                <option value="WY">Wyoming (WY)</option>
         </select>
         <br>
         <input type="checkbox" id="myCheck" onclick="myFunction()">  
@@ -165,12 +171,12 @@
             <option value="TN">Tennessee (TN)</option>
             <option value="TX">Texas (TX)</option>
             <option value="UT">Utah (UT)</option>
-            <option value="VT">Vermont</option>
-            <option value="VA">Virginia</option>
-            <option value="WA">Washington</option>
-            <option value="WV">West Virginia</option>
-            <option value="WI">Wisconsin</option>
-            <option value="WY">Wyoming</option>
+            <option value="VT">Vermont (VT)</option>
+            <option value="VA">Virginia (VA)</option>
+            <option value="WA">Washington (WA)</option>
+            <option value="WV">West Virginia (WV)</option>
+            <option value="WI">Wisconsin (WI)</option>
+            <option value="WY">Wyoming (WY)</option>
         </select>
         <br><br>
         <input type="submit" value="Submit">
