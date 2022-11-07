@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import RegisteredUser, UserForm
+from .models import Profile
 # Create your views here.
 
 @login_required(login_url='signin')
@@ -38,8 +38,8 @@ def signup(request):
 
                 #create a Profile obejct for new user
                 user_model = User.objects.get(username=username)
-                #new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
-                #new_profile.save()
+                new_profile = Profile.objects.create(user=user_model)
+                new_profile.save()
                 return redirect('/')
 
         else:
@@ -72,10 +72,47 @@ def logout(request):
     auth.logout(request)
     return redirect('signin')
 
-
+@login_required(login_url='signin')
 def profile(request):
-    form = UserForm()
+    user_profile = Profile.objects.get(user=request.user)
     context = {
-        'form':form,
+        'user_profile': user_profile,
     }
-    return render(request, 'clientDetail.html', context)
+
+    return render(request, 'profile.html', context)
+
+
+@login_required(login_url='signin')
+def setting(request):
+
+    user_profile = Profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        name = request.POST['Name']
+        dinerNum = request.POST['DinerNum']
+        payment = request.POST['Payment']
+        shippingAd = request.POST['ShippingAd']
+        shipCity = request.POST['ShipCity']
+        shipZipCode = request.POST['ShipZipCode']
+        shipstates = request.POST['states']
+        billingAd = request.POST['BillingAd']
+        billCity = request.POST['BillCity']
+        billZipcode = request.POST['BillZipCode']
+        billstates = request.POST['states2']
+        user_profile.Name = name
+        user_profile.DinerNum = dinerNum
+        user_profile.PaymentMethod = payment
+        user_profile.MstAddress = shippingAd
+        user_profile.MCity = shipCity
+        user_profile.MState = shipstates
+        user_profile.MZip = shipZipCode
+
+        user_profile.BstAddress = billingAd
+        user_profile.BCity = billCity
+        user_profile.BState = billstates
+        user_profile.BZip = billZipcode
+        user_profile.save()
+
+        return redirect('profile')
+
+
+    return render(request, 'setting.html', {'user_profile': user_profile} )

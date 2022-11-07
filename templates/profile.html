@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<!--Victoria Bedar-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Client Details</title>
+</head>
+
+<body>
+    <a href="\">Home</a>&ensp;
+    <a href="profile"> Profile</a>&ensp;
+    <a href="setting"> Edit Profile</a>&ensp;
+    <a href="logout"> Log Out</a>&ensp;
+    <br>
+
+    <h1>Hello {{user_profile.Name}}</h1>
+    <h4>Profile Details:</h4>
+    <p>
+        Reward Points: {{user_profile.Points}}
+    </p>
+    <p>
+        PaymentMethod: {{user_profile.PaymentMethod}}
+    </p>
+    <p>
+        Favorite Diner Number: {{user_profile.DinerNum}}
+    </p>
+    <p>
+        Shipping Address: {{user_profile.MstAddress}}, {{user_profile.MCity}}, {{user_profile.MState}} {{user_profile.MZip}}
+    </p>
+    <p>
+        Billing Address: {{user_profile.BstAddress}}, {{user_profile.BCity}}, {{user_profile.BState}} {{user_profile.BZip}}
+    </p>
+
+
+</body>
+</html>
