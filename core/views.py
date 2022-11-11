@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
 from .models import Profile
 # Create your views here.
 
@@ -117,12 +118,13 @@ def setting(request):
 
     return render(request, 'setting.html', {'user_profile': user_profile} )
 
-def reservationPage(request):
+class reservationPage(TemplateView):
     '''Display reservation parameters to user, '''
-    if request.method == 'POST': # User making a reservation
-        pass
-    else:                       # User loading page
-        pass
-    context = {}
-    return render(request, 'reservation.html', context)
+    template_name = "reseravation.html"
+    # if request.method == 'POST': # User making a reservation
+    #     pass
+    # else:                       # User loading page
+    #     pass
+    # context = {}
+    # return render(request, 'reservation.html', context)
 
