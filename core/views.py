@@ -116,3 +116,13 @@ def setting(request):
 
 
     return render(request, 'setting.html', {'user_profile': user_profile} )
+
+def reservationPage(request):
+    '''Display reservation parameters to user, '''
+    if request.method == 'POST': # User making a reservation
+        pass
+    else:                       # User loading page
+        pass
+    context = {}
+    return render(request, 'reservation.html', context)
+
