@@ -118,13 +118,23 @@ def setting(request):
 
     return render(request, 'setting.html', {'user_profile': user_profile} )
 
+# Class based view documentation:
+# https://docs.djangoproject.com/en/4.1/topics/class-based-views/intro/
 class reservationPage(TemplateView):
-    '''Display reservation parameters to user, '''
-    template_name = "reseravation.html"
-    # if request.method == 'POST': # User making a reservation
-    #     pass
-    # else:                       # User loading page
-    #     pass
-    # context = {}
-    # return render(request, 'reservation.html', context)
+    '''Display reservation parameters to user, 
+        Calculate table(s) required to accommodate,
+        Reserve table(s) for guest'''
+    template_name = "reservation.html"
+    context = {}
+    def get(self, request): # Function called for GET request        
+        return render(request, 'reservation.html')
+    
+    def post(self, request): # Called for POST requests        
+        return render(request, 'reservation.html')
+
+    def table_allocation(num_guests):
+        '''Find and allocate available tables to seat num_guests.'''
+        # return [list_of_table_id's] ?
+        pass
+   
 
