@@ -32,12 +32,25 @@ class Profile (models.Model):
 
 #Reservation Model
 class Reservation (models.Model):
+    #user = models.ForeignKey(User, on_delete = models.CASCADE)
     Name = models.CharField(max_length=100)
-    Phone = models.CharField(max_length=20)
-    Email = models.CharField(max_length=100)
+    Phone = models.CharField(max_length=20) #Need some extra validation for phone numbers
+    Email = models.EmailField(max_length=100)
     Time = models.DateTimeField()
     GuestNum = models.PositiveIntegerField()
     HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
+
+class ReservationForm (ModelForm):
+    class Meta:
+        model = Reservation
+        exclude = ['HoldFee']
+        labels = {
+            'Time':gettext_lazy('Reservation Time'),
+            'GuestNum':gettext_lazy('Party of'),
+        } 
+        #widgets = { #hoping to implement date picker for the time field ~ Victoria Bedar
+        #    'Time':DateTimeInput(attrs={'type': 'datetime'})
+        #}
 
 #Table Model
 class Table (models.Model):

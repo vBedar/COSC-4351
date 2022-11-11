@@ -1,11 +1,11 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-from .models import Profile
+from .models import Profile, Reservation, Table, ReservationForm
 # Create your views here.
 
 @login_required(login_url='signin')
@@ -126,15 +126,37 @@ class reservationPage(TemplateView):
         Reserve table(s) for guest'''
     template_name = "reservation.html"
     context = {}
-    def get(self, request): # Function called for GET request        
-        return render(request, 'reservation.html')
-    
-    def post(self, request): # Called for POST requests        
-        return render(request, 'reservation.html')
+    #user_obj = get_object_or_404(User, pk=1)
 
-    def table_allocation(num_guests):
-        '''Find and allocate available tables to seat num_guests.'''
+    def get(self, request): # Function called for GET request
+        form = ReservationForm()        
+        return render(request, 'reservation.html', {'form':form})
+    
+    def post(self, request): # Called for POST requests 
+        reservation = Reservation()#user=user_obj)
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation.Name = form.cleaned_data['Name']
+            reservation.Phone = form.cleaned_data['Phone']
+            reservation.Email = form.cleaned_data['Email']
+            reservation.Time = form.cleaned_data['Time']
+            reservation.GuestNum = form.cleaned_data['GuestNum']
+            reservation.save()
+            return HttpResponse('Form Submitted')
+        return render(request, 'reservation.html', {'form':form})
+
+    #def table_allocation(num_guests):
+        #'''Find and allocate available tables to seat num_guests.'''
         # return [list_of_table_id's] ?
-        pass
+        #if Table.objects.filter(isReserved = False).count() == 0:
+            #messages.info(request, 'No tables avalible')
+            #return redirect('reservationPage')
+        #if Table.objects.filter(isReserved = False, Capacity >= Current_Reservation.GuestNum).count() > 0:
+            #Display table list: Table.objects.filter(isReserved = False, Capacity >= Current_Reservation)
+            #Set whatever table object is chosen isReserved value to True
+            #Redirect to confirmation page or display confirmation message
+        #else:
+            #The Table combining method will go here
+        #pass
    
 
