@@ -131,13 +131,13 @@ class reservationPage(TemplateView):
     def get(self, request): # Function called for GET request
         form = ReservationForm()        
         # User data to populate initial form fields.
-        #initial = {}
-        #user_profile = Profile.objects.filter(user=request.user) # TODO: Check if user profile object exists.        
+        context = {"form": form}
         if(request.user.is_authenticated):
-            print("Registered user loaded page.")
-        else:
-            print("UN-registgered user")
-        return render(request, 'reservation.html', {'form':form})
+            user_profile = Profile.objects.filter(user=request.user)[0]
+            context['Name'] = user_profile.Name
+            #context['Name'] = user_profile.
+                               
+        return render(request, 'reservation.html', context)
     
     def post(self, request): # Called for POST requests 
         reservation = Reservation()#user=user_obj)
