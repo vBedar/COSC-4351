@@ -71,7 +71,7 @@ def signin(request):
 @login_required(login_url='signin')
 def logout(request):
     auth.logout(request)
-    return redirect('signin')
+    return redirect('index')
 
 @login_required(login_url='signin')
 def profile(request):
@@ -132,7 +132,11 @@ class reservationPage(TemplateView):
         form = ReservationForm()        
         # User data to populate initial form fields.
         #initial = {}
-        user_profile = Profile.objects.filter(user=request.user) # TODO: Check if user profile object exists.        
+        #user_profile = Profile.objects.filter(user=request.user) # TODO: Check if user profile object exists.        
+        if(request.user.is_authenticated):
+            print("Registered user loaded page.")
+        else:
+            print("UN-registgered user")
         return render(request, 'reservation.html', {'form':form})
     
     def post(self, request): # Called for POST requests 
