@@ -125,11 +125,14 @@ class reservationPage(TemplateView):
         Calculate table(s) required to accommodate,
         Reserve table(s) for guest'''
     template_name = "reservation.html"
-    context = {}
+    #context = {}
     #user_obj = get_object_or_404(User, pk=1)
 
     def get(self, request): # Function called for GET request
         form = ReservationForm()        
+        # User data to populate initial form fields.
+        #initial = {}
+        user_profile = Profile.objects.filter(user=request.user) # TODO: Check if user profile object exists.        
         return render(request, 'reservation.html', {'form':form})
     
     def post(self, request): # Called for POST requests 
