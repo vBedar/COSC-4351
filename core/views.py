@@ -8,9 +8,9 @@ from django.views.generic import TemplateView
 from .models import Profile, Reservation, Table, ReservationForm
 # Create your views here.
 
-@login_required(login_url='signin')
-def index(request):
-    user_object = User.objects.get(username=request.user.username)
+#@login_required(login_url='signin')
+def index(request):    
+    #user_object = User.objects.get(username=request.user.username)
     return render(request, 'index.html')
 
 
