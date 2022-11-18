@@ -75,7 +75,10 @@ def logout(request):
 
 @login_required(login_url='signin')
 def profile(request):
-    user_profile = Profile.objects.get(user=request.user)
+    if Profile.objects.filter(user = request.user).exists():
+        user_profile = Profile.objects.get(user=request.user)
+    else:
+        return redirect('setting')
     context = {
         'user_profile': user_profile,
     }
@@ -86,7 +89,12 @@ def profile(request):
 @login_required(login_url='signin')
 def setting(request):
 
-    user_profile = Profile.objects.get(user=request.user)
+    #user_profile = Profile.objects.get(user=request.user)
+    if Profile.objects.filter(user = request.user).exists():
+        user_profile = Profile.objects.get(user=request.user)
+        #Not sure how to auto-fill without using Django forms but we should do it if the User has a profile and also have the user's email filled~ Victoria Bedar
+    else:
+        user_profile = Profile(user=request.user)
     if request.method == 'POST':
         name = request.POST['Name']
         #dinerNum = request.POST['DinerNum'] #Shouldn't be in the form these are system generated ~ Victoria Bedar
@@ -95,6 +103,8 @@ def setting(request):
         shipCity = request.POST['ShipCity']
         shipZipCode = request.POST['ShipZipCode']
         shipstates = request.POST['states']
+        Pphone = request.POST.get('phoneEntry', None)
+        Pemail = request.POST.get('emailEntry', None)
         billingAd = request.POST['BillingAd']
         billCity = request.POST['BillCity']
         billZipcode = request.POST['BillZipCode']
@@ -106,6 +116,8 @@ def setting(request):
         user_profile.MCity = shipCity
         user_profile.MState = shipstates
         user_profile.MZip = shipZipCode
+        user_profile.pPhone = Pphone
+        user_profile.pEmail = Pemail
 
         user_profile.BstAddress = billingAd
         user_profile.BCity = billCity
@@ -116,7 +128,7 @@ def setting(request):
         return redirect('profile')
 
 
-    return render(request, 'setting.html', {'user_profile': user_profile} )
+    return render(request, 'setting.html')#, {'user_profile': user_profile} )
 
 # Class based view documentation:
 # https://docs.djangoproject.com/en/4.1/topics/class-based-views/intro/
@@ -129,13 +141,18 @@ class reservationPage(TemplateView):
     #user_obj = get_object_or_404(User, pk=1)
 
     def get(self, request): # Function called for GET request
-        form = ReservationForm()        
+        if Profile.objects.filter(user = request.user).exists():
+            user_profile = Profile.objects.get(user = request.user)
+            data = {'Name':user_profile.Name, 'Phone':user_profile.pPhone, 'Email':user_profile.pEmail, 'Time':"", 'GuestNum':""}
+            form = ReservationForm(initial=data)
+        else:
+            form = ReservationForm()        
         # User data to populate initial form fields.
         context = {"form": form}
-        if(request.user.is_authenticated):
-            user_profile = Profile.objects.filter(user=request.user)[0]
-            context['Name'] = user_profile.Name
-            #context['Name'] = user_profile.
+        # if(request.user.is_authenticated):
+        #     user_profile = Profile.objects.filter(user=request.user)[0]
+        #     context['Name'] = user_profile.Name
+        #     #context['Name'] = user_profile.
                                
         return render(request, 'reservation.html', context)
     

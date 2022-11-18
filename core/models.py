@@ -30,6 +30,8 @@ class Profile (models.Model):
     BState = models.CharField(max_length = 40)
     BZip = models.CharField(max_length = 9)
     #TODO: Add Phone and Email parameters to autofill reservation form.
+    pPhone = models.CharField(max_length=20, null = True)
+    pEmail = models.EmailField(max_length=100, null = True)
 
 #Reservation Model
 class Reservation (models.Model):

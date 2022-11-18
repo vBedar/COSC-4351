@@ -108,10 +108,21 @@
                 <option value="WY">Wyoming (WY)</option>
         </select>
         <br>
+        <br>
+        <label for="phoneEntry">Phone Number:</label>
+        <br>
+        <input type="tel" id="phoneEntry" name= "phoneEntry" value="{{user_profile.pPhone}}">
+        <br>
+        <br>
+        <label for="emailEntry">Email:</label>
+        <br>
+        <input type="email" id="emailEntry" name= "emailEntry" value="{{user_profile.pEmail}}">
+        <br>
+        <br>
         <input type="checkbox" id="myCheck" onclick="myFunction()">  
 	    <label for="myCheck">Same as Shipping Address:</label>   
 	    <br/>
-        <label for="BillingAd">Billing Address</label>
+        <label for="BillingAd">Billing Address:</label>
         <br>
         <input type="text" id="BillingAd" name="BillingAd" value="{{user_profile.BstAddress}}">
         <br>
