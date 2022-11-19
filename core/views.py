@@ -75,10 +75,7 @@ def logout(request):
 
 @login_required(login_url='signin')
 def profile(request):
-    if Profile.objects.filter(user = request.user).exists():
-        user_profile = Profile.objects.get(user=request.user)
-    else:
-        return redirect('setting')
+    user_profile = Profile.objects.get(user=request.user)
     context = {
         'user_profile': user_profile,
     }
@@ -141,10 +138,11 @@ class reservationPage(TemplateView):
     #user_obj = get_object_or_404(User, pk=1)
 
     def get(self, request): # Function called for GET request
-        if Profile.objects.filter(user = request.user).exists():
-            user_profile = Profile.objects.get(user = request.user)
-            data = {'Name':user_profile.Name, 'Phone':user_profile.pPhone, 'Email':user_profile.pEmail, 'Time':"", 'GuestNum':""}
-            form = ReservationForm(initial=data)
+        if(request.user.is_authenticated):
+            if Profile.objects.filter(user = request.user).exists():
+                user_profile = Profile.objects.get(user = request.user)
+                data = {'Name':user_profile.Name, 'Phone':user_profile.pPhone, 'Email':user_profile.pEmail, 'Time':"", 'GuestNum':""}
+                form = ReservationForm(initial=data)
         else:
             form = ReservationForm()        
         # User data to populate initial form fields.
@@ -166,7 +164,8 @@ class reservationPage(TemplateView):
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
             reservation.save()
-            return HttpResponse('Form Submitted')
+            messages.info(request, 'Reservation Successful') #Message appears on sign-in page. Not sure how to get it on the home page~ Victoria Bedar
+            return redirect('index')
         return render(request, 'reservation.html', {'form':form})
 
     #def table_allocation(num_guests):
