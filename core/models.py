@@ -32,10 +32,14 @@ class Profile (models.Model):
     BCity = models.CharField(max_length = 100)
     BState = models.CharField(max_length = 40)
     BZip = models.CharField(max_length = 9)
-    #The Validator for the Profile isn't working right now due to the form being handled in an html template. Need to find a way to validate there~ Victoria Bedar
     Phone_validator = RegexValidator(regex=r'^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$', message="Please enter a valid Phone Number")
     pPhone = models.CharField(validators=[Phone_validator], max_length=17, null = True)
     pEmail = models.EmailField(max_length=100, null = True)
+
+#Table Model
+class Table (models.Model):
+    Capacity = models.PositiveIntegerField(default=2)
+    isReserved = models.BooleanField(default=False)
 
 #Reservation Model
 def date_validator (ResDate):
@@ -44,7 +48,6 @@ def date_validator (ResDate):
 
 
 class Reservation (models.Model):
-    #user = models.ForeignKey(User, on_delete = models.CASCADE)
     Name = models.CharField(max_length=100)
     Phone_validator = RegexValidator(regex=r'^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$', message="Please enter a valid Phone Number")
     Phone = models.CharField(validators=[Phone_validator],max_length=17)
@@ -52,6 +55,7 @@ class Reservation (models.Model):
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
     HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
+    #Table = models.ForeignKey(Table, on_delete = models.CASCADE)
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
@@ -68,9 +72,6 @@ class ReservationForm (ModelForm):
             'Time':dateWidget()
         }
 
-#Table Model
-class Table (models.Model):
-    Capacity = models.PositiveIntegerField(default=2)
-    isReserved = models.BooleanField(default=False)
+
 
 # Create your models here.

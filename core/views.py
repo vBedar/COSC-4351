@@ -40,6 +40,7 @@ def signup(request):
                 #create a Profile obejct for new user
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model)
+                new_profile.pEmail = email
                 new_profile.save()
                 return redirect('/')
 
@@ -86,10 +87,8 @@ def profile(request):
 @login_required(login_url='signin')
 def setting(request):
 
-    #user_profile = Profile.objects.get(user=request.user)
     if Profile.objects.filter(user = request.user).exists():
         user_profile = Profile.objects.get(user=request.user)
-        #Not sure how to auto-fill without using Django forms but we should do it if the User has a profile and also have the user's email filled~ Victoria Bedar
     else:
         user_profile = Profile(user=request.user)
     if request.method == 'POST':
@@ -125,7 +124,7 @@ def setting(request):
         return redirect('profile')
 
 
-    return render(request, 'setting.html')#, {'user_profile': user_profile} )
+    return render(request, 'setting.html', {'user_profile': user_profile} )
 
 # Class based view documentation:
 # https://docs.djangoproject.com/en/4.1/topics/class-based-views/intro/
@@ -183,3 +182,7 @@ class reservationPage(TemplateView):
         #pass
    
 
+#Draft of confirmation page ~ Victoria Bedar
+# def ReservationConfirmation(request, reservationID):
+#     reservation = Reservation.objects.get(pk=reservationID)
+#     return render(request, 'confirmation.html', {'reservation':reservation})
