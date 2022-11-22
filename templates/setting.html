@@ -21,7 +21,7 @@
         {% csrf_token %}
         <label for="Name">Full Name: </label>
         <br>
-        <input type="text" id="Name" name="Name" value="{{user_profile.Name}}">
+        <input type="text" id="Name" name="Name" maxlength=100 value="{{user_profile.Name}}" required>
         <br>
         <!--<label for="DinerNum">Favorite Diner Number:</label>
         <br>
@@ -42,18 +42,18 @@
         <br>
         <label for="ShippingAd">Shipping Address: </label>
         <br>
-        <input type="text" id="ShippingAd" name="ShippingAd" value="{{user_profile.MstAddress}}">
+        <input type="text" id="ShippingAd" name="ShippingAd" maxlength=100 value="{{user_profile.MstAddress}}" required>
         <br>
         <label for="ShipCity">City: </label>
         <br>
-        <input type="text" id="ShipCity" name="ShipCity" value="{{user_profile.MCity}}">
+        <input type="text" id="ShipCity" name="ShipCity" maxlength=100 value="{{user_profile.MCity}}" required>
         <br>
         <label for="ShipZipcode">ZipCode: </label>
         <br>
-        <input type="text" id="ShipZipCode" name="ShipZipCode" value="{{user_profile.MZip}}">
+        <input type="text" id="ShipZipCode" name="ShipZipCode" maxlength=7 value="{{user_profile.MZip}}" required>
         <br>
         <label for="states">States:</label>
-        <select name="states" id="states">
+        <select name="states" id="states" required>
                 <option value="{{user_profile.MState}}">{{user_profile.MState}}</option>
                 <option value="AL">Alabama (AL)</option>
                 <option value="AK">Alaska (AK)</option>
@@ -108,23 +108,34 @@
                 <option value="WY">Wyoming (WY)</option>
         </select>
         <br>
+        <br>
+        <label for="phoneEntry">Phone Number:</label>
+        <br>
+        <input type="tel" id="phoneEntry" name= "phoneEntry" maxlength=17 pattern="^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$" value="{{user_profile.pPhone}}">
+        <br>
+        <br>
+        <label for="emailEntry">Email:</label>
+        <br>
+        <input type="email" id="emailEntry" name= "emailEntry" maxlength=100 value="{{user_profile.pEmail}}">
+        <br>
+        <br>
         <input type="checkbox" id="myCheck" onclick="myFunction()">  
 	    <label for="myCheck">Same as Shipping Address:</label>   
 	    <br/>
-        <label for="BillingAd">Billing Address</label>
+        <label for="BillingAd">Billing Address:</label>
         <br>
-        <input type="text" id="BillingAd" name="BillingAd" value="{{user_profile.BstAddress}}">
+        <input type="text" id="BillingAd" name="BillingAd" maxlength=100 value="{{user_profile.BstAddress}}" required>
         <br>
         <label for="BillCity">City: </label>
         <br>
-        <input type="text" id="BillCity" name="BillCity" value="{{user_profile.BCity}}">
+        <input type="text" id="BillCity" name="BillCity" maxlength=100 value="{{user_profile.BCity}}" required>
         <br>
         <label for="BillZipcode">ZipCode: </label>
         <br>
-        <input type="text" id="BillZipCode" name="BillZipCode" value="{{user_profile.BZip}}">
+        <input type="text" id="BillZipCode" name="BillZipCode" maxlength=7 value="{{user_profile.BZip}}" required>
         <br>
         <label for="states2">States:</label>
-        <select name="states2" id="states2">
+        <select name="states2" id="states2" required>
             <option value="{{user_profile.MState}}">{{user_profile.MState}}</option>
             <option value="AL">Alabama (AL)</option>
             <option value="AK">Alaska (AK)</option>

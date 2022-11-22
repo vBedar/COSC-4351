@@ -6,9 +6,12 @@ from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
 from datetime import datetime
+from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 User = get_user_model()
@@ -29,33 +32,46 @@ class Profile (models.Model):
     BCity = models.CharField(max_length = 100)
     BState = models.CharField(max_length = 40)
     BZip = models.CharField(max_length = 9)
-    #TODO: Add Phone and Email parameters to autofill reservation form.
-
-#Reservation Model
-class Reservation (models.Model):
-    #user = models.ForeignKey(User, on_delete = models.CASCADE)
-    Name = models.CharField(max_length=100)
-    Phone = models.CharField(max_length=20) #Need some extra validation for phone numbers
-    Email = models.EmailField(max_length=100)
-    Time = models.DateTimeField()
-    GuestNum = models.PositiveIntegerField()
-    HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
-
-class ReservationForm (ModelForm):
-    class Meta:
-        model = Reservation
-        exclude = ['HoldFee']
-        labels = {
-            'Time':gettext_lazy('Reservation Time'),
-            'GuestNum':gettext_lazy('Party of'),
-        } 
-        #widgets = { #hoping to implement date picker for the time field ~ Victoria Bedar
-        #    'Time':DateTimeInput(attrs={'type': 'datetime'})
-        #}
+    Phone_validator = RegexValidator(regex=r'^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$', message="Please enter a valid Phone Number")
+    pPhone = models.CharField(validators=[Phone_validator], max_length=17, null = True)
+    pEmail = models.EmailField(max_length=100, null = True)
 
 #Table Model
 class Table (models.Model):
     Capacity = models.PositiveIntegerField(default=2)
     isReserved = models.BooleanField(default=False)
+
+#Reservation Model
+def date_validator (ResDate):
+    if ResDate < timezone.now():
+        raise ValidationError("You cannot book a table in the past")
+
+
+class Reservation (models.Model):
+    Name = models.CharField(max_length=100)
+    Phone_validator = RegexValidator(regex=r'^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$', message="Please enter a valid Phone Number")
+    Phone = models.CharField(validators=[Phone_validator],max_length=17)
+    Email = models.EmailField(max_length=100)
+    Time = models.DateTimeField(validators=[date_validator])
+    GuestNum = models.PositiveIntegerField()
+    HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
+    #Table = models.ForeignKey(Table, on_delete = models.CASCADE)
+
+class dateWidget(forms.widgets.DateTimeInput):
+    input_type = 'datetime-local'
+
+class ReservationForm (ModelForm):
+    class Meta:
+        model = Reservation
+        exclude = ['Phone_validator','HoldFee']
+        labels = {
+            'Time':gettext_lazy('Reservation Time'),
+            'GuestNum':gettext_lazy('Party of'),
+        } 
+        widgets = {
+            'Time':dateWidget()
+        }
+
+
 
 # Create your models here.
