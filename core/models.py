@@ -72,6 +72,8 @@ class ReservationForm (ModelForm):
             'Time':dateWidget()
         }
 
-
+class HighTrafficDay(models.Model):
+    date = models.DateTimeField(validators=[date_validator])
+    name = models.CharField(max_length=100)
 
 # Create your models here.
