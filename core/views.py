@@ -134,8 +134,7 @@ class reservationPage(TemplateView):
         context = {"form": form}
         if(request.user.is_authenticated):
             user_profile = Profile.objects.filter(user=request.user)[0]
-            context['Name'] = user_profile.Name
-            #context['Name'] = user_profile.
+            context['Name'] = user_profile.Name            
                                
         return render(request, 'reservation.html', context)
     
