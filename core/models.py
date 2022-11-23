@@ -40,6 +40,8 @@ class Profile (models.Model):
 class Table (models.Model):
     Capacity = models.PositiveIntegerField(default=2)
     isReserved = models.BooleanField(default=False)
+    def __str__(self):
+        return 'Table ' + str(self.id) + ' (Seats ' + str(self.Capacity) + ')'
 
 #Reservation Model
 def date_validator (ResDate):
@@ -55,7 +57,7 @@ class Reservation (models.Model):
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
     HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
-    #Table = models.ForeignKey(Table, on_delete = models.CASCADE)
+    Table = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False})
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
@@ -72,6 +74,14 @@ class ReservationForm (ModelForm):
         widgets = {
             'Time':dateWidget()
         }
+        #Supposed to get table capacity > guestNum validation working but it's not ~ Victoria Bedar
+        # def clean(self):
+        #     cleaned_data = super().clean()
+        #     GuestNum = cleaned_data.get("GuestNum")
+        #     Table = cleaned_data.get("Table")
+        #      #if gN and T:
+        #     if GuestNum > Table.Capacity:
+        #     raise ValidationError("Table can not accommodate amount of guests")
 
 class HighTrafficDay(models.Model):
     date = models.DateTimeField(validators=[date_validator])

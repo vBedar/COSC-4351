@@ -154,8 +154,13 @@ class reservationPage(TemplateView):
             reservation.Email = form.cleaned_data['Email']
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
-            reservation.save()
-            return HttpResponse('Form Submitted')
+            reservation.Table = form.cleaned_data['Table']
+            #Rough Validation for preventing guests from reserving a table with lower capacity. Would rather get something like this working in the models/forms if possible ~ Victoria Bedar
+            if reservation.GuestNum > reservation.Table.Capacity:
+                return render(request, 'reservation.html', {'form':form})
+            else:
+                reservation.save()
+                return HttpResponse('Form Submitted')
         return render(request, 'reservation.html', {'form':form})
 
     #def table_allocation(num_guests):
