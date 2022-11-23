@@ -67,6 +67,7 @@ class ReservationForm (ModelForm):
         labels = {
             'Time':gettext_lazy('Reservation Time'),
             'GuestNum':gettext_lazy('Party of'),
+            'Phone':gettext_lazy('Phone (in format ###-###-#### or (###) ###-####)')
         } 
         widgets = {
             'Time':dateWidget()
