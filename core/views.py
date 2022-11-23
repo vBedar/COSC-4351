@@ -40,6 +40,7 @@ def signup(request):
                 #create a Profile obejct for new user
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model)
+                new_profile.pEmail = email
                 new_profile.save()
                 return redirect('/')
 
@@ -95,6 +96,8 @@ def setting(request):
         shipCity = request.POST['ShipCity']
         shipZipCode = request.POST['ShipZipCode']
         shipstates = request.POST['states']
+        Pphone = request.POST.get('phoneEntry', None)
+        Pemail = request.POST.get('emailEntry', None)
         billingAd = request.POST['BillingAd']
         billCity = request.POST['BillCity']
         billZipcode = request.POST['BillZipCode']
@@ -106,13 +109,13 @@ def setting(request):
         user_profile.MCity = shipCity
         user_profile.MState = shipstates
         user_profile.MZip = shipZipCode
-
+        user_profile.pPhone = Pphone
+        user_profile.pEmail = Pemail
         user_profile.BstAddress = billingAd
         user_profile.BCity = billCity
         user_profile.BState = billstates
         user_profile.BZip = billZipcode
         user_profile.save()
-        messages.info(request, 'Profile Updated')
 
         return redirect('profile')
 
@@ -129,19 +132,21 @@ class reservationPage(TemplateView):
     #context = {}
     #user_obj = get_object_or_404(User, pk=1)
 
-    def get(self, request): # Function called for GET request
-        form = ReservationForm()        
-        # User data to populate initial form fields.
-        context = {"form": form}
+    def get(self, request): # Function called for GET request       
+        # This is needed for auto-filling ~ Victoria Bedar
         if(request.user.is_authenticated):
-            user_profile = Profile.objects.filter(user=request.user)[0]
-            context['Name'] = user_profile.Name
-            #context['Name'] = user_profile.
+            user_profile = Profile.objects.get(user = request.user)
+            # User data to populate initial form fields.
+            data = {'Name':user_profile.Name, 'Phone':user_profile.pPhone, 'Email':user_profile.pEmail, 'Time':"", 'GuestNum':""}
+            form = ReservationForm(initial=data)
+        else:
+            form = ReservationForm()  
+        context = {"form": form}
                                
         return render(request, 'reservation.html', context)
     
     def post(self, request): # Called for POST requests 
-        reservation = Reservation()#user=user_obj)
+        reservation = Reservation()
         form = ReservationForm(request.POST)
         if form.is_valid():
             reservation.Name = form.cleaned_data['Name']
