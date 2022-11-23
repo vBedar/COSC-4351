@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -7,16 +8,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Edit Profile</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
+    <div class="topnav">
     <a href="\">Home</a>&ensp;
     <a href="profile"> Profile</a>&ensp;
-    <a href="setting"> Edit Profile</a>&ensp;
+    <a class="active" href="setting"> Edit Profile</a>&ensp;
     <a href="logout"> Log Out</a>&ensp;
+    </div>
     <br>
+
+    <div style="padding-left:20px">
     <h1>Profile Setting</h1>
-    <p>Please fill-out the following</p>
     <form class="editUser" method="post" action="">
         {% csrf_token %}
         <label for="Name">Full Name: </label>
@@ -38,8 +43,7 @@
         </select>
         <br> 
         <br>
-        <br>
-        <br>
+
         <label for="ShippingAd">Shipping Address: </label>
         <br>
         <input type="text" id="ShippingAd" name="ShippingAd" maxlength=100 value="{{user_profile.MstAddress}}" required>
@@ -53,6 +57,7 @@
         <input type="text" id="ShipZipCode" name="ShipZipCode" maxlength=7 value="{{user_profile.MZip}}" required>
         <br>
         <label for="states">States:</label>
+        <br>
         <select name="states" id="states" required>
                 <option value="{{user_profile.MState}}">{{user_profile.MState}}</option>
                 <option value="AL">Alabama (AL)</option>
@@ -121,7 +126,8 @@
         <br>
         <input type="checkbox" id="myCheck" onclick="myFunction()">  
 	    <label for="myCheck">Same as Shipping Address:</label>   
-	    <br/>
+	    <br>
+        <br>
         <label for="BillingAd">Billing Address:</label>
         <br>
         <input type="text" id="BillingAd" name="BillingAd" maxlength=100 value="{{user_profile.BstAddress}}" required>
@@ -135,6 +141,7 @@
         <input type="text" id="BillZipCode" name="BillZipCode" maxlength=7 value="{{user_profile.BZip}}" required>
         <br>
         <label for="states2">States:</label>
+        <br>
         <select name="states2" id="states2" required>
             <option value="{{user_profile.MState}}">{{user_profile.MState}}</option>
             <option value="AL">Alabama (AL)</option>
@@ -192,6 +199,8 @@
         <br><br>
         <input type="submit" value="Submit">
     </form>
+
+</div>
 
     <script>
         function myFunction() {

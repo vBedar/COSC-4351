@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -7,10 +8,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Client Details</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
+    <div class="topnav">
+        <a href="\">Home</a>&ensp;
+        </div>
+
+    <div style="padding-left:20px">
     <h1>Thank you for your reservation {{reservation.Name}}!</h1>
     <p>We hope to see you at {{reservation.Time}} at table(s) {{reservation.Table}}.</p>
-    <a href="\">Home</a>&ensp;
+
+    </div>
+    
 </body>

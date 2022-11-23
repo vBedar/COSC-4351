@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -7,17 +8,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Client Details</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
+    <div class="topnav">
     <a href="\">Home</a>&ensp;
-    <a href="profile"> Profile</a>&ensp;
+    <a class="active" href="profile"> Profile</a>&ensp;
     <a href="setting"> Edit Profile</a>&ensp;
     <a href="logout"> Log Out</a>&ensp;
+    </div>
     <br>
 
-    <h1>Hello {{user_profile.Name}}</h1>
-    <h4>Profile Details:</h4>
+    <div class="profile" style="padding-left:20px">
+    <h1>Profile Details:</h1>
+    <h4>Hello {{user_profile.Name}}</h4>
+
     <p>
         Reward Points: {{user_profile.Points}}
     </p>
@@ -34,6 +40,17 @@
         Billing Address: {{user_profile.BstAddress}}, {{user_profile.BCity}}, {{user_profile.BState}} {{user_profile.BZip}}
     </p>
 
+    <div>
+        <style>
+            h5{
+                color:rgb(0, 47, 255);
+            }
+        </style>
+        {% for message in messages %}
+        <h5>{{message}}</h5>
+        {% endfor %}
+    </div>
+    </div>
 
 </body>
 </html>

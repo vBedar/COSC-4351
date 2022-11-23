@@ -1,24 +1,36 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 
 <head>
     <title>Home</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>        
     {% if user.is_authenticated %}
+    <div class="topnav">
+        <a class="active" href="\">Home</a>&ensp;
         <a href="profile"> Profile</a>&ensp;
         <a href="setting"> Edit Profile</a>&ensp;
         <a href="logout"> Log Out</a>&ensp;
+    </div>
     {% else %}
+    <div class="topnav">
+        <a class="active" href="\">Home</a>&ensp;
         <a href="signin">Login</a>&ensp;
         <a href="signup">Sign Up</a>&ensp;
+    </div>
     {% endif %}
     <br>
-    <h1>Home Page</h1>
-    <br>
-    <a href="reservation">Make a Reservation</a>
+    <div style="padding-left:20px">
+        <h1>Home Page</h1>
+        <br>
+        <div class="botton">
+        <a href="reservation">Make a Reservation</a>
+        </div>
+    </div>
 </body>
 
 
