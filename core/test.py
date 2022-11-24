@@ -5,27 +5,33 @@ from django.utils import timezone
 
 # Create your tests here.
 class ReservationTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        t1 = Table.objects.create()
+        t1.save()
     def test_Phone_Validation_valid(self):
+        t1 = Table.objects.get(pk=1)
         date = datetime.datetime.now() + datetime.timedelta(days=1)
         #Valid Phones
-        VResForm1 = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        VResForm2 = ReservationForm(data={'Name':'James', 'Phone':'(123) 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
+        VResForm1 = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        VResForm2 = ReservationForm(data={'Name':'James', 'Phone':'(123) 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
 
         self.assertTrue(VResForm1.is_valid())
         self.assertTrue(VResForm2.is_valid())
 
     def test_Phone_Validation_invalid(self):
+        t1 = Table.objects.get(pk=1)
         date = datetime.datetime.now() + datetime.timedelta(days=1)
 
         #Invalid Phones
-        IResForm1 = ReservationForm(data={'Name':'James', 'Phone':'123-456-789', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm2 = ReservationForm(data={'Name':'James', 'Phone':'123-46-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm3 = ReservationForm(data={'Name':'James', 'Phone':'1234567890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm4 = ReservationForm(data={'Name':'James', 'Phone':'12-345-67890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm5 = ReservationForm(data={'Name':'James', 'Phone':'(123 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm6 = ReservationForm(data={'Name':'James', 'Phone':'123) 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm7 = ReservationForm(data={'Name':'James', 'Phone':'12', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
-        IResForm8 = ReservationForm(data={'Name':'James', 'Phone':'abc-def-ghij', 'Email':'j@j.com', 'Time':date, 'GuestNum':3})
+        IResForm1 = ReservationForm(data={'Name':'James', 'Phone':'123-456-789', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm2 = ReservationForm(data={'Name':'James', 'Phone':'123-46-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm3 = ReservationForm(data={'Name':'James', 'Phone':'1234567890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm4 = ReservationForm(data={'Name':'James', 'Phone':'12-345-67890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm5 = ReservationForm(data={'Name':'James', 'Phone':'(123 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm6 = ReservationForm(data={'Name':'James', 'Phone':'123) 456-7890', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm7 = ReservationForm(data={'Name':'James', 'Phone':'12', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
+        IResForm8 = ReservationForm(data={'Name':'James', 'Phone':'abc-def-ghij', 'Email':'j@j.com', 'Time':date, 'GuestNum':3, 'Table':t1})
 
         self.assertFalse(IResForm1.is_valid())
         self.assertFalse(IResForm2.is_valid())
@@ -37,11 +43,12 @@ class ReservationTest(TestCase):
         self.assertFalse(IResForm8.is_valid())
     
     def test_Date_validation(self):
+        t1 = Table.objects.get(pk=1)
         validDate = datetime.datetime.now() + datetime.timedelta(days=1)
         invalidDate = datetime.datetime.now() - datetime.timedelta(days=1)
 
-        vForm = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':validDate, 'GuestNum':3})
-        iForm = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':invalidDate, 'GuestNum':3})
+        vForm = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':validDate, 'GuestNum':3, 'Table':t1})
+        iForm = ReservationForm(data={'Name':'James', 'Phone':'123-456-7890', 'Email':'j@j.com', 'Time':invalidDate, 'GuestNum':3, 'Table':t1})
 
         self.assertTrue(vForm.is_valid())
         self.assertFalse(iForm.is_valid())
