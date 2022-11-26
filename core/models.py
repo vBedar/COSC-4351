@@ -56,8 +56,17 @@ class Reservation (models.Model):
     Email = models.EmailField(max_length=100)
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
-    HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
-    Table = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False})
+    #HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
+    isHighTraffic = models.BooleanField(default=False)
+    isRegistered = models.BooleanField(default=False)
+    # def limitQuery(self):
+    #      q = Reservation.objects.filter(Time__gte = self.Time)
+    #      for Table in q.iterator():
+    #          #T = Table.objects.get(pk=q.Table.id)
+    #          #T.isReserved = True
+    #          Table.isReserved = True
+    #      return 
+    Table = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
@@ -65,7 +74,7 @@ class dateWidget(forms.widgets.DateTimeInput):
 class ReservationForm (ModelForm):
     class Meta:
         model = Reservation
-        exclude = ['Phone_validator','HoldFee']
+        exclude = ['Phone_validator','HoldFee', 'Table', 'isHighTraffic', 'isRegistered']
         labels = {
             'Time':gettext_lazy('Reservation Time'),
             'GuestNum':gettext_lazy('Party of'),
@@ -82,6 +91,10 @@ class ReservationForm (ModelForm):
         #      #if gN and T:
         #     if GuestNum > Table.Capacity:
         #     raise ValidationError("Table can not accommodate amount of guests")
+class RTableForm (ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['Table']
 
 class HighTrafficDay(models.Model):
     date = models.DateTimeField(validators=[date_validator])

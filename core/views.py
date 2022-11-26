@@ -5,12 +5,19 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-from .models import Profile, Reservation, Table, ReservationForm
+import datetime
+from .models import Profile, Reservation, Table, ReservationForm, RTableForm
 # Create your views here.
 
 #@login_required(login_url='signin')
 def index(request):    
     #user_object = User.objects.get(username=request.user.username)
+    #resetting tables for limit_choices_to ~ Victoria Bedar
+    for t in Table.objects.all():
+        t.isReserved = False
+        t.save()  
+    #For those that quit half-way through the reservation process by hitting Home~ Victoria Bedar    
+    Reservation.objects.filter(Table=None).delete()
     return render(request, 'index.html')
 
 
@@ -147,6 +154,8 @@ class reservationPage(TemplateView):
     
     def post(self, request): # Called for POST requests 
         reservation = Reservation()
+        if(request.user.is_authenticated):
+            reservation.isRegistered = True
         form = ReservationForm(request.POST)
         if form.is_valid():
             reservation.Name = form.cleaned_data['Name']
@@ -154,13 +163,15 @@ class reservationPage(TemplateView):
             reservation.Email = form.cleaned_data['Email']
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
-            reservation.Table = form.cleaned_data['Table']
-            #Rough Validation for preventing guests from reserving a table with lower capacity. Would rather get something like this working in the models/forms if possible ~ Victoria Bedar
-            if reservation.GuestNum > reservation.Table.Capacity:
-                return render(request, 'reservation.html', {'form':form})
-            else:
-                reservation.save()
-                return HttpResponse('Form Submitted')
+            reservation.save()
+            return redirect('/reservation/%d'%reservation.id)
+            # reservation.Table = form.cleaned_data['Table']
+            # #Rough Validation for preventing guests from reserving a table with lower capacity. Would rather get something like this working in the models/forms if possible ~ Victoria Bedar
+            # if reservation.GuestNum > reservation.Table.Capacity:
+            #     return render(request, 'reservation.html', {'form':form})
+            # else:
+            #     reservation.save()
+            #     return HttpResponse('Form Submitted')
         return render(request, 'reservation.html', {'form':form})
 
     #def table_allocation(num_guests):
@@ -178,3 +189,30 @@ class reservationPage(TemplateView):
         #pass
    
 
+def reserveTable(request, r_id):
+    reservation = Reservation.objects.get(pk=r_id)
+    #reservation.limitQuery()
+    #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
+    q = Reservation.objects.filter(Time__gte = reservation.Time).filter(Time__lte = reservation.Time + datetime.timedelta(hours=1))
+    for t in q:
+        if Table.objects.filter(pk=t.Table_id).exists():
+            T=Table.objects.get(pk=t.Table_id)
+            T.isReserved = True
+            T.save()
+    if request.method == 'POST':
+        form = RTableForm(request.POST)
+        if form.is_valid():
+            reservation.Table = form.cleaned_data['Table']
+            reservation.save()           
+            return redirect('/reservation/%d/confirmation'%r_id)
+    else:
+        form = RTableForm()
+    return render(request, 'reservation.html', {'form':form})
+
+
+def confirmation(request, r_id):
+    reservation = Reservation.objects.get(pk=r_id)
+    for t in Table.objects.all():
+         t.isReserved = False
+         t.save()      
+    return render(request, 'confirmation.html', {'reservation':reservation})
