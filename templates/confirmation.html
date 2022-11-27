@@ -19,10 +19,6 @@
     <div style="padding-left:20px">
     <h1>Thank you for your reservation {{reservation.Name}}!</h1>
     <p>We hope to see you at {{reservation.Time}} at table(s) {{reservation.Table}}.</p>
-    {% if reservation.isRegistered is not True %}
-    <p>We see that your not registered with us.</p>
-    <p>You can sign-up <a href="\signup">here</a></p>
-    {% endif %}
     {% if reservation.isHighTraffic %}
     <p>It's a busy day today. Failure to show up will result in a minimum $10 fine!</p>
     {% endif %}

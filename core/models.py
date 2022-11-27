@@ -58,7 +58,6 @@ class Reservation (models.Model):
     GuestNum = models.PositiveIntegerField()
     #HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
     isHighTraffic = models.BooleanField(default=False)
-    isRegistered = models.BooleanField(default=False)
     # def limitQuery(self):
     #      q = Reservation.objects.filter(Time__gte = self.Time)
     #      for Table in q.iterator():

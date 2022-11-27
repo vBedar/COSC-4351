@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-import datetime
+from datetime import timedelta
 from .models import Profile, Reservation, Table, ReservationForm, RTableForm
 # Create your views here.
 
@@ -193,12 +193,16 @@ def reserveTable(request, r_id):
     reservation = Reservation.objects.get(pk=r_id)
     #reservation.limitQuery()
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
-    q = Reservation.objects.filter(Time__gte = reservation.Time).filter(Time__lte = reservation.Time + datetime.timedelta(hours=1))
+    hour_later = reservation.Time + timedelta(hours=1)
+    q = Reservation.objects.filter(Time__gte = reservation.Time).filter(Time__lte = hour_later)
     for t in q:
         if Table.objects.filter(pk=t.Table_id).exists():
             T=Table.objects.get(pk=t.Table_id)
             T.isReserved = True
             T.save()
+    if Table.objects.filter(isReserved=False).count() <= 0:
+        messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+        reservation.delete()
     if request.method == 'POST':
         form = RTableForm(request.POST)
         if form.is_valid():

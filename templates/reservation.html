@@ -14,6 +14,20 @@
     </div>
 
     <div style="padding-left:20px">
+    {% if user.is_authenticated is not True %}
+    <p>We see that you're not registered with us.</p>
+    <p>You can sign-up <a href="\signup">here</a></p>
+    {% endif %}
+    <div>
+        <style>
+            h5{
+                color:red;
+            }
+        </style>
+        {% for message in messages %}
+        <h5>{{message}}</h5>
+        {% endfor %}
+    </div>
     <form class="editUser" method="post" action="">
         {% csrf_token %}
         {{form.as_p}}
