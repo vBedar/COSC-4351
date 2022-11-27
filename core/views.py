@@ -203,6 +203,11 @@ def reserveTable(request, r_id):
     if Table.objects.filter(isReserved=False).count() <= 0:
         messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
         reservation.delete()
+    elif Table.objects.filter(isReserved=False).count() == 1:
+        t1 = Table.objects.get(isReserved=False)
+        if t1.Capacity < reservation.GuestNum:
+            messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+            reservation.delete()
     if request.method == 'POST':
         form = RTableForm(request.POST)
         if form.is_valid():
