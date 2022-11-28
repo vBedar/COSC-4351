@@ -5,7 +5,7 @@ from statistics import mode
 from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
-from datetime import datetime
+import datetime
 from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy
@@ -105,20 +105,20 @@ class HighTrafficDay(models.Model):
     #Halloween - 10/31
 
 
-# List of name, date pairs of high traffic days.
+# List of dattime objects of high traffic days.
 High_Traffic_Days = [
-    ('Christmas', datetime(datetime.now().year, 12, 25)),
-    ('Christmas Eve', datetime(datetime.now().year, 12, 24)),
-    ('Thanksgiving', datetime(datetime.now().year, 11, 25)),
-    ('Good Friday', datetime(datetime.now().year, 4, 2)),
-    ('Labor Day', datetime(datetime.now().year, 9, 6)),
-    ('New Years Day', datetime(datetime.now().year, 1, 1)),
-    ('New Years Eve', datetime(datetime.now().year, 12, 31)),
-    ('4th of July', datetime(datetime.now().year, 7, 4)),
-    ('Memorial Day', datetime(datetime.now().year, 5, 31)),
-    ('Veterans Day', datetime(datetime.now().year, 11, 11)),
-    ('MLK', datetime(datetime.now().year, 1, 18)),
-    ('Halloween', datetime(datetime.now().year, 10, 31)),
+    datetime.date(datetime.datetime.now().year, 12, 25),
+    datetime.date(datetime.datetime.now().year, 12, 24),
+    datetime.date(datetime.datetime.now().year, 11, 25),
+    datetime.date(datetime.datetime.now().year, 4, 2),
+    datetime.date(datetime.datetime.now().year, 9, 6),
+    datetime.date(datetime.datetime.now().year, 1, 1),
+    datetime.date(datetime.datetime.now().year, 12, 31),
+    datetime.date(datetime.datetime.now().year, 7, 4),
+    datetime.date(datetime.datetime.now().year, 5, 31),
+    datetime.date(datetime.datetime.now().year, 11, 11),
+    datetime.date(datetime.datetime.now().year, 1, 18),
+    datetime.date(datetime.datetime.now().year, 10, 31),
 ]
 
 

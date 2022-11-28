@@ -153,21 +153,26 @@ class reservationPage(TemplateView):
         return render(request, 'reservation.html', context)
     
     def post(self, request): # Called for POST requests 
+        print("POST request received")
         reservation = Reservation()
         if(request.user.is_authenticated):
             reservation.isRegistered = True
         form = ReservationForm(request.POST)
         if form.is_valid():
+            print("Form is valid")
             reservation.Name = form.cleaned_data['Name']
             reservation.Phone = form.cleaned_data['Phone']
             reservation.Email = form.cleaned_data['Email']
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
             # Check if date is in high traffic days list.
+            print("Date: ", reservation.Time.date())
             if(form.cleaned_data['Time'].date() in High_Traffic_Days):
                 reservation.isHighTraffic = True
                 print("High traffic day reservation.")
                 # Prompt for holding fee, ask for card info if not on file for user.
+            else:
+                print("Low traffic day reservation.")
             reservation.save()
             return redirect('/reservation/%d'%reservation.id)
             # reservation.Table = form.cleaned_data['Table']
