@@ -207,6 +207,17 @@ def reserveTable(request, r_id):
         if t1.Capacity < reservation.GuestNum:
             messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
             reservation.delete()
+    else:
+        qt = Table.objects.filter(isReserved=False)
+        for t in qt:
+            T=Table.objects.get(pk=t.id)
+            if T.Capacity < reservation.GuestNum:
+                T.isReserved = True
+                T.save()
+        if Table.objects.filter(isReserved=False).count() <= 0:
+            #TODO: Table combining stuff
+            messages.warning(request, 'Table combining needed')
+
     if request.method == 'POST':
         form = RTableForm(request.POST)
         if form.is_valid():
