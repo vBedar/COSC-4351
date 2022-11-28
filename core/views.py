@@ -165,9 +165,10 @@ class reservationPage(TemplateView):
             reservation.Email = form.cleaned_data['Email']
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
-            # Check if date is in high traffic days list.
+            # Check if date is in high traffic days list or on a weekend.
             #print("Date: ", reservation.Time.date())
-            if(form.cleaned_data['Time'].date() in High_Traffic_Days):
+            #print("Weekday(): ", reservation.Time.weekday())
+            if(form.cleaned_data['Time'].date() in High_Traffic_Days or form.cleaned_data['Time'].date().weekday() >= 4):
                 reservation.isHighTraffic = True
                 #print("High traffic day reservation.")
                 # Prompt for holding fee, ask for card info if not on file for user.
