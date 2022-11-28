@@ -104,20 +104,21 @@ class HighTrafficDay(models.Model):
     #MLK - 3rd Monday of January
     #Halloween - 10/31
 
+
 # List of name, date pairs of high traffic days.
 High_Traffic_Days = [
-    ('Christmas', datetime(2021, 12, 25)),
-    ('Christmas Eve', datetime(2021, 12, 24)),
-    ('Thanksgiving', datetime(2021, 11, 25)),
-    ('Good Friday', datetime(2021, 4, 2)),
-    ('Labor Day', datetime(2021, 9, 6)),
-    ('New Years Day', datetime(2021, 1, 1)),
-    ('New Years Eve', datetime(2021, 12, 31)),
-    ('4th of July', datetime(2021, 7, 4)),
-    ('Memorial Day', datetime(2021, 5, 31)),
-    ('Veterans Day', datetime(2021, 11, 11)),
-    ('MLK', datetime(2021, 1, 18)),
-    ('Halloween', datetime(2021, 10, 31)),
+    ('Christmas', datetime(datetime.now().year, 12, 25)),
+    ('Christmas Eve', datetime(datetime.now().year, 12, 24)),
+    ('Thanksgiving', datetime(datetime.now().year, 11, 25)),
+    ('Good Friday', datetime(datetime.now().year, 4, 2)),
+    ('Labor Day', datetime(datetime.now().year, 9, 6)),
+    ('New Years Day', datetime(datetime.now().year, 1, 1)),
+    ('New Years Eve', datetime(datetime.now().year, 12, 31)),
+    ('4th of July', datetime(datetime.now().year, 7, 4)),
+    ('Memorial Day', datetime(datetime.now().year, 5, 31)),
+    ('Veterans Day', datetime(datetime.now().year, 11, 11)),
+    ('MLK', datetime(datetime.now().year, 1, 18)),
+    ('Halloween', datetime(datetime.now().year, 10, 31)),
 ]
 
 

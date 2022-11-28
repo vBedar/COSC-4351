@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from datetime import timedelta
-from .models import Profile, Reservation, Table, ReservationForm, RTableForm
+from .models import Profile, Reservation, Table, ReservationForm, RTableForm, High_Traffic_Days
 # Create your views here.
 
 #@login_required(login_url='signin')
@@ -163,6 +163,11 @@ class reservationPage(TemplateView):
             reservation.Email = form.cleaned_data['Email']
             reservation.Time = form.cleaned_data['Time']
             reservation.GuestNum = form.cleaned_data['GuestNum']
+            # Check if date is in high traffic days list.
+            if(form.cleaned_data['Time'].date() in High_Traffic_Days):
+                reservation.isHighTraffic = True
+                print("High traffic day reservation.")
+                # Prompt for holding fee, ask for card info if not on file for user.
             reservation.save()
             return redirect('/reservation/%d'%reservation.id)
             # reservation.Table = form.cleaned_data['Table']
