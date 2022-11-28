@@ -13,7 +13,6 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
-# Create your models here.
 User = get_user_model()
 #RegisteredUser Model
 class Profile (models.Model):
@@ -56,7 +55,6 @@ class Reservation (models.Model):
     Email = models.EmailField(max_length=100)
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
-    #HoldFee = models.DecimalField(max_digits=100, decimal_places=2, null=True) #For high traffic days. Thinking of tracking those by marking true if it's a holiday, weekend, or if a ceratin amount of tables are reserved ~ Victoria Bedar
     isHighTraffic = models.BooleanField(default=False)
     # def limitQuery(self):
     #      q = Reservation.objects.filter(Time__gte = self.Time)
@@ -66,6 +64,8 @@ class Reservation (models.Model):
     #          Table.isReserved = True
     #      return 
     Table = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
+    #When trying to add this field it says that the 1st parameter needs to be a model even though that's exactly what I did (the parameters are literally the same as Table) ~ Victoria Bedar
+    #Table2 = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
@@ -73,7 +73,7 @@ class dateWidget(forms.widgets.DateTimeInput):
 class ReservationForm (ModelForm):
     class Meta:
         model = Reservation
-        exclude = ['Phone_validator','HoldFee', 'Table', 'isHighTraffic', 'isRegistered']
+        exclude = ['Phone_validator','HoldFee', 'Table', 'isHighTraffic']
         labels = {
             'Time':gettext_lazy('Reservation Time'),
             'GuestNum':gettext_lazy('Party of'),
@@ -82,14 +82,7 @@ class ReservationForm (ModelForm):
         widgets = {
             'Time':dateWidget()
         }
-        #Supposed to get table capacity > guestNum validation working but it's not ~ Victoria Bedar
-        # def clean(self):
-        #     cleaned_data = super().clean()
-        #     GuestNum = cleaned_data.get("GuestNum")
-        #     Table = cleaned_data.get("Table")
-        #      #if gN and T:
-        #     if GuestNum > Table.Capacity:
-        #     raise ValidationError("Table can not accommodate amount of guests")
+
 class RTableForm (ModelForm):
     class Meta:
         model = Reservation
@@ -98,5 +91,17 @@ class RTableForm (ModelForm):
 class HighTrafficDay(models.Model):
     date = models.DateTimeField(validators=[date_validator])
     name = models.CharField(max_length=100)
+    #Christmas - 12/25
+    #Christmas Eve - 12/24
+    #Thanksgivng - 4th Thursday of November
+    #Good Friday - Varies by year (2023-04-07, 2024-03-29, 2025-04-18)
+    #Labor Day - 1st Monday of September
+    #New Years Day - 01/01
+    #New Years Eve - 12/31
+    #4th of July - 07/04
+    #Memorial Day - Last Monday of May
+    #Veterans Day - 11/11
+    #MLK - 3rd Monday of January
+    #Halloween - 10/31
 
-# Create your models here.
+
