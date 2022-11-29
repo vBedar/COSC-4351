@@ -123,7 +123,7 @@ def setting(request):
         user_profile.BState = billstates
         user_profile.BZip = billZipcode
         user_profile.save()
-
+        messages.info(request, 'Profile Updated Successfully.')
         return redirect('profile')
 
 
