@@ -61,11 +61,6 @@ class Reservation (models.Model):
     def clean(self):
         if self.Table == self.TableT and self.Table is not None:
             raise ValidationError("You cannot combine the same table")
-        # if self.Table is not None and self.TableT is not None:
-        #     T1 = Table.objects.get(pk=self.Table_id)
-        #     T2 = Table.objects.get(pk=self.TableT_id)
-        #     if T1.Capacity + T2.Capacity < self.GuestNum:
-        #         raise ValidationError("Insufficient Capacity. Please choose a different combination")
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
