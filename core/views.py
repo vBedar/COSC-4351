@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from datetime import timedelta
-from .models import Profile, Reservation, Table, ReservationForm, RTableForm, High_Traffic_Days
+from .models import Profile, Reservation, Table, ReservationForm, RTableForm, HighTrafficDay, Holidays
 # Create your views here.
 
 #@login_required(login_url='signin')
@@ -168,16 +168,21 @@ class reservationPage(TemplateView):
             # Check if date is in high traffic days list or on a weekend.
             #print("Date: ", reservation.Time.date())
             #print("Weekday(): ", reservation.Time.weekday())
-            if(form.cleaned_data['Time'].date() in High_Traffic_Days or form.cleaned_data['Time'].date().weekday() >= 4):
-                reservation.isHighTraffic = True
-                #print("High traffic day reservation.")
-                # Prompt for holding fee, ask for card info if not on file for user.
+                # TODO: Prompt for holding fee, ask for card info if not on file for user.
             # else:
             #     print("Low traffic day reservation.")
+            
             reservation.save()
+            print("Reservation.Time.date(): ", reservation.Time.date())            
+            if(self.isHighTraffic(reservation)):
+                reservation.isHighTraffic = True
             return redirect('/reservation/%d'%reservation.id)
             # reservation.Table = form.cleaned_data['Table']
-            # #Rough Validation for preventing guests from reserving a table with lower capacity. Would rather get something like this working in the models/forms if possible ~ Victoria Bedar
+            """ 
+            Rough Validation for preventing guests from reserving a table
+            with lower capacity. Would rather get something like this 
+            working in the models/forms if possible ~ Victoria Bedar
+            """
             # if reservation.GuestNum > reservation.Table.Capacity:
             #     return render(request, 'reservation.html', {'form':form})
             # else:
@@ -185,19 +190,32 @@ class reservationPage(TemplateView):
             #     return HttpResponse('Form Submitted')
         return render(request, 'reservation.html', {'form':form})
 
-    #def table_allocation(num_guests):
-        #'''Find and allocate available tables to seat num_guests.'''
-        # return [list_of_table_id's] ?
-        #if Table.objects.filter(isReserved = False).count() == 0:
-            #messages.info(request, 'No tables avalible')
-            #return redirect('reservationPage')
-        #if Table.objects.filter(isReserved = False, Capacity >= Current_Reservation.GuestNum).count() > 0:
-            #Display table list: Table.objects.filter(isReserved = False, Capacity >= Current_Reservation)
-            #Set whatever table object is chosen isReserved value to True
-            #Redirect to confirmation page or display confirmation message
-        #else:
-            #The Table combining method will go here
-        #pass
+    # def table_allocation(num_guests):
+    #     '''Find and allocate available tables to seat num_guests.'''
+    #     return [list_of_table_id's] ?
+    #     if Table.objects.filter(isReserved = False).count() == 0:
+    #         messages.info(request, 'No tables avalible')
+    #         return redirect('reservationPage')
+    #     if Table.objects.filter(isReserved = False, Capacity >= Current_Reservation.GuestNum).count() > 0:
+    #         Display table list: Table.objects.filter(isReserved = False, Capacity >= Current_Reservation)
+    #         Set whatever table object is chosen isReserved value to True
+    #         Redirect to confirmation page or display confirmation message
+    #     else:
+    #         The Table combining method will go here
+    #     pass
+    
+    def isHighTraffic(reservation, arg2):
+        '''Check if date is in high traffic days list or on a weekend.'''
+        print("Reservation Obj arg 1:", reservation)
+        print("Reservation Obj arg 2: ", arg2)
+        # if(date.weekday() >= 4):
+        #     return True        
+        # else:
+        #     for holiday in Holidays:
+        #         if(date == holiday):
+        #             return True
+        #     return False
+        return True
    
 
 def reserveTable(request, r_id):
