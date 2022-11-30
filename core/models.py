@@ -63,9 +63,9 @@ class Reservation (models.Model):
     #          #T.isReserved = True
     #          Table.isReserved = True
     #      return 
-    Table = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
+    Table = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
     #When trying to add this field it says that the 1st parameter needs to be a model even though that's exactly what I did (the parameters are literally the same as Table) ~ Victoria Bedar
-    #Table2 = models.ForeignKey(Table, on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
+    TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT')
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
@@ -73,7 +73,7 @@ class dateWidget(forms.widgets.DateTimeInput):
 class ReservationForm (ModelForm):
     class Meta:
         model = Reservation
-        exclude = ['Phone_validator','HoldFee', 'Table', 'isHighTraffic']
+        exclude = ['Phone_validator','HoldFee', 'Table','TableT', 'isHighTraffic']
         labels = {
             'Time':gettext_lazy('Reservation Time'),
             'GuestNum':gettext_lazy('Party of'),
@@ -86,7 +86,7 @@ class ReservationForm (ModelForm):
 class RTableForm (ModelForm):
     class Meta:
         model = Reservation
-        fields = ['Table']
+        fields = ['Table', 'TableT']
 
 class HighTrafficDay(models.Model):
     date = models.DateTimeField(validators=[date_validator])
