@@ -30,9 +30,18 @@
     </div>
     <form class="editUser" method="post" action="">
         {% csrf_token %}
-       <p>{{form.Table}}</p>
+        {{ form.non_field_errors }}
+       <p>
+        {{form.Table.errors}}
+        <label for="{{form.Table.id_for_label}}">Table 1: </label>
+        {{form.Table}}
+       </p>
         {% if TableCombine %}
-        <p>{{form.TableT}}</p>
+        <p>
+            {{form.TableT.errors}}
+            <label for="{{form.TableT.id_for_label}}">Table 2: </label>
+            {{form.TableT}}
+        </p>
         {% endif %}
         <input type="submit" value="Submit">
     </form>
