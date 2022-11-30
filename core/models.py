@@ -88,37 +88,26 @@ class RTableForm (ModelForm):
         model = Reservation
         fields = ['Table']
 
+# Tracks high traffic days that may change year to year.
 class HighTrafficDay(models.Model):
     date = models.DateTimeField(validators=[date_validator])
     name = models.CharField(max_length=100)
-    #Christmas - 12/25
-    #Christmas Eve - 12/24
-    #Thanksgivng - 4th Thursday of November
-    #Good Friday - Varies by year (2023-04-07, 2024-03-29, 2025-04-18)
-    #Labor Day - 1st Monday of September
-    #New Years Day - 01/01
-    #New Years Eve - 12/31
-    #4th of July - 07/04
-    #Memorial Day - Last Monday of May
-    #Veterans Day - 11/11
-    #MLK - 3rd Monday of January
-    #Halloween - 10/31
 
 
-# List of dattime objects of high traffic days.
-High_Traffic_Days = [
-    datetime.date(datetime.datetime.now().year, 12, 25),
-    datetime.date(datetime.datetime.now().year, 12, 24),
-    datetime.date(datetime.datetime.now().year, 11, 25),
-    datetime.date(datetime.datetime.now().year, 4, 2),
-    datetime.date(datetime.datetime.now().year, 9, 6),
-    datetime.date(datetime.datetime.now().year, 1, 1),
-    datetime.date(datetime.datetime.now().year, 12, 31),
-    datetime.date(datetime.datetime.now().year, 7, 4),
-    datetime.date(datetime.datetime.now().year, 5, 31),
-    datetime.date(datetime.datetime.now().year, 11, 11),
-    datetime.date(datetime.datetime.now().year, 1, 18),
-    datetime.date(datetime.datetime.now().year, 10, 31),
+# List of (Day, Month) tuples for holidays (fixed dates).
+Holidays = [
+    (1, 1), # New Years Day
+    (12, 31), # New Years Eve
+    (7, 4), # 4th of July
+    (11, 11), # Veterans Day
+    (12, 25), # Christmas
+    (12, 24), # Christmas Eve
+    (10, 31), # Halloween
+    (5, 31), # Memorial Day
+    (1, 31), # MLK
+    (9, 1), # Labor Day
+    (11, 4), # Thanksgiving
+    (4, 7), # Good Friday
 ]
 
 
