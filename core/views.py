@@ -258,20 +258,46 @@ def reserveTable(request, r_id):
                 T.isReserved = True
                 T.save()
         if Table.objects.filter(isReserved=False).count() <= 0:
-            #TODO: Table combining stuff
             TableCombine = True
-            messages.warning(request, 'Table combining needed')
+            ValidComboExists = False
             for t in qt:
-                T=Table.objects.get(pk=t.id)
-                T.isReserved=False
-                T.save()
+                T1=Table.objects.get(pk=t.id)
+                for n in qt:
+                    T2=Table.objects.get(pk=n.id)
+                    if T1 != T2 and T1.Capacity + T2.Capacity >= reservation.GuestNum:
+                        ValidComboExists = True
+                        break
+                if ValidComboExists:
+                    break
+            if ValidComboExists:        
+                messages.warning(request, 'Table combining needed')
+                for t in qt:
+                    T=Table.objects.get(pk=t.id)
+                    T.isReserved=False
+                    T.save()
+            else:
+                messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+            
 
     if request.method == 'POST':
         form = RTableForm(request.POST)
         if form.is_valid():
             reservation.Table = form.cleaned_data['Table']
-            reservation.save()           
-            return redirect('/reservation/%d/confirmation'%r_id)
+            reservation.TableT = form.cleaned_data['TableT']
+            if reservation.Table is not None and reservation.TableT is not None:
+                T1 = Table.objects.get(pk=reservation.Table_id)
+                T2 = Table.objects.get(pk=reservation.TableT_id)
+                if T1.Capacity + T2.Capacity < reservation.GuestNum:
+                    messages.error(request, 'Insufficient Capacity. Please choose a different combination')   
+                else:
+                    reservation.save()           
+                    return redirect('/reservation/%d/confirmation'%r_id)
+            else:
+                if TableCombine and reservation.TableT is None:
+                    messages.error(request,'A second Table is needed')
+                else:
+                    reservation.save()           
+                    return redirect('/reservation/%d/confirmation'%r_id)               
     else:
         form = RTableForm()
     context = {

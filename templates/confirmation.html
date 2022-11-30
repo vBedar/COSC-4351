@@ -18,7 +18,7 @@
 
     <div style="padding-left:20px">
     <h1>Thank you for your reservation {{reservation.Name}}!</h1>
-    <p>We hope to see you on {{reservation.Time}} at table(s) {{reservation.Table}}.</p>
+    <p>We hope to see you on {{reservation.Time}} at table(s) {{reservation.Table}}{% if reservation.TableT is not None%} and {{reservation.TableT}} {% endif %}.</p>
     <p>Failure to show up will result in a minimum $10 fine!</p>
 
     </div>

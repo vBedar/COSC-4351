@@ -56,16 +56,16 @@ class Reservation (models.Model):
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
     isHighTraffic = models.BooleanField(default=False)
-    # def limitQuery(self):
-    #      q = Reservation.objects.filter(Time__gte = self.Time)
-    #      for Table in q.iterator():
-    #          #T = Table.objects.get(pk=q.Table.id)
-    #          #T.isReserved = True
-    #          Table.isReserved = True
-    #      return 
     Table = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
-    #When trying to add this field it says that the 1st parameter needs to be a model even though that's exactly what I did (the parameters are literally the same as Table) ~ Victoria Bedar
-    TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT')
+    TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
+    def clean(self):
+        if self.Table == self.TableT and self.Table is not None:
+            raise ValidationError("You cannot combine the same table")
+        # if self.Table is not None and self.TableT is not None:
+        #     T1 = Table.objects.get(pk=self.Table_id)
+        #     T2 = Table.objects.get(pk=self.TableT_id)
+        #     if T1.Capacity + T2.Capacity < self.GuestNum:
+        #         raise ValidationError("Insufficient Capacity. Please choose a different combination")
 
 class dateWidget(forms.widgets.DateTimeInput):
     input_type = 'datetime-local'
