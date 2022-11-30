@@ -169,13 +169,13 @@ class reservationPage(TemplateView):
             #print("Date: ", reservation.Time.date())
             #print("Weekday(): ", reservation.Time.weekday())
                 # TODO: Prompt for holding fee, ask for card info if not on file for user.
+            print("Reservation.Time.date: ", reservation.Time.date())            
+            if(self.isHighTraffic(reservation.Time.date())):
+                reservation.isHighTraffic = True
             # else:
             #     print("Low traffic day reservation.")
             
             reservation.save()
-            print("Reservation.Time.date(): ", reservation.Time.date())            
-            if(self.isHighTraffic(reservation)):
-                reservation.isHighTraffic = True
             return redirect('/reservation/%d'%reservation.id)
             # reservation.Table = form.cleaned_data['Table']
             """ 
@@ -206,18 +206,24 @@ class reservationPage(TemplateView):
         pass
     """
     
-    def isHighTraffic(reservation, arg2):
-        '''Check if date is in high traffic days list or on a weekend.'''
-        print("Reservation Obj arg 1:", reservation)
-        print("Reservation Obj arg 2: ", arg2)
-        # if(date.weekday() >= 4):
-        #     return True        
-        # else:
-        #     for holiday in Holidays:
-        #         if(date == holiday):
-        #             return True
-        #     return False
-        return True
+    '''Check if date is in high traffic days list or on a weekend.'''
+    def isHighTraffic(reservationObj, date):
+        # print("reservationObj:", reservationObj)
+        # print("date: ", date)
+        monthDay = (date.month, date.day)
+        if(monthDay in Holidays):
+            return True
+        if(date.weekday() >= 4):
+            return True
+        #TODO: Query HighTrafficDays table for date.
+        htd = HighTrafficDay.objects.filter(date=date)
+        if(htd):
+            return True
+        #TODO: Check if limited seating left on this date.
+        r = Reservation.objects.filter(Time=date)
+        if(r.count() >= 1):
+            return True
+        return False
    
 
 def reserveTable(request, r_id):

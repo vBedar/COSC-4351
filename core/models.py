@@ -94,7 +94,7 @@ class HighTrafficDay(models.Model):
     name = models.CharField(max_length=100)
 
 
-# List of (Day, Month) tuples for holidays (fixed dates).
+# List of (Month, Day) tuples for holidays (fixed dates).
 Holidays = [
     (1, 1), # New Years Day
     (12, 31), # New Years Eve
@@ -108,6 +108,7 @@ Holidays = [
     (9, 1), # Labor Day
     (11, 4), # Thanksgiving
     (4, 7), # Good Friday
+    (2, 14), # Valentines Day
 ]
 
 
