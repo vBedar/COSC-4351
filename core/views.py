@@ -190,19 +190,21 @@ class reservationPage(TemplateView):
             #     return HttpResponse('Form Submitted')
         return render(request, 'reservation.html', {'form':form})
 
-    # def table_allocation(num_guests):
-    #     '''Find and allocate available tables to seat num_guests.'''
-    #     return [list_of_table_id's] ?
-    #     if Table.objects.filter(isReserved = False).count() == 0:
-    #         messages.info(request, 'No tables avalible')
-    #         return redirect('reservationPage')
-    #     if Table.objects.filter(isReserved = False, Capacity >= Current_Reservation.GuestNum).count() > 0:
-    #         Display table list: Table.objects.filter(isReserved = False, Capacity >= Current_Reservation)
-    #         Set whatever table object is chosen isReserved value to True
-    #         Redirect to confirmation page or display confirmation message
-    #     else:
-    #         The Table combining method will go here
-    #     pass
+    """
+    def table_allocation(num_guests):
+        '''Find and allocate available tables to seat num_guests.'''
+        return [list_of_table_id's] ?
+        if Table.objects.filter(isReserved = False).count() == 0:
+            messages.info(request, 'No tables avalible')
+            return redirect('reservationPage')
+        if Table.objects.filter(isReserved = False, Capacity >= Current_Reservation.GuestNum).count() > 0:
+            Display table list: Table.objects.filter(isReserved = False, Capacity >= Current_Reservation)
+            Set whatever table object is chosen isReserved value to True
+            Redirect to confirmation page or display confirmation message
+        else:
+            The Table combining method will go here
+        pass
+    """
     
     def isHighTraffic(reservation, arg2):
         '''Check if date is in high traffic days list or on a weekend.'''
