@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from datetime import timedelta
+import random
 from .models import Profile, Reservation, Table, ReservationForm, RTableForm, HighTrafficDay, Holidays
 # Create your views here.
 
@@ -48,6 +49,8 @@ def signup(request):
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model)
                 new_profile.pEmail = email
+                random.seed(user_model.id, 2)
+                new_profile.DinerNum=random.randrange(1000000, 10000000)
                 new_profile.save()
                 return redirect('/')
 
