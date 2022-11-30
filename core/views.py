@@ -123,7 +123,7 @@ def setting(request):
         user_profile.BState = billstates
         user_profile.BZip = billZipcode
         user_profile.save()
-
+        messages.info(request, 'Profile Updated Successfully.')
         return redirect('profile')
 
 
@@ -228,7 +228,9 @@ class reservationPage(TemplateView):
 
 def reserveTable(request, r_id):
     reservation = Reservation.objects.get(pk=r_id)
-    #reservation.limitQuery()
+    TableCombine=False
+    if reservation.isHighTraffic:
+        messages.info(request, "We're expecting a lot of traffic today. If you continue with your reservation, you'll be charged with a hold fee.")
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
     q = Reservation.objects.filter(Time__gte = reservation.Time - timedelta(hours=1)).filter(Time__lte = reservation.Time + timedelta(hours=1))
     for t in q:
@@ -236,6 +238,10 @@ def reserveTable(request, r_id):
             T=Table.objects.get(pk=t.Table_id)
             T.isReserved = True
             T.save()
+        if Table.objects.filter(pk=t.TableT_id).exists():
+            TT=Table.objects.get(pk=t.TableT_id)
+            TT.isReserved = True
+            TT.save()    
     if Table.objects.filter(isReserved=False).count() <= 0:
         messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
         reservation.delete()
@@ -253,7 +259,12 @@ def reserveTable(request, r_id):
                 T.save()
         if Table.objects.filter(isReserved=False).count() <= 0:
             #TODO: Table combining stuff
+            TableCombine = True
             messages.warning(request, 'Table combining needed')
+            for t in qt:
+                T=Table.objects.get(pk=t.id)
+                T.isReserved=False
+                T.save()
 
     if request.method == 'POST':
         form = RTableForm(request.POST)
@@ -263,7 +274,11 @@ def reserveTable(request, r_id):
             return redirect('/reservation/%d/confirmation'%r_id)
     else:
         form = RTableForm()
-    return render(request, 'reservation.html', {'form':form})
+    context = {
+        'form':form,
+        'TableCombine':TableCombine,
+    }
+    return render(request, 'TReservation.html', context)
 
 
 def confirmation(request, r_id):
