@@ -60,7 +60,7 @@ class Reservation (models.Model):
     TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
     
     def __str__(self):
-        return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum)
+        return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum) + ' Table: ' + str(self.Table)
 
     def clean(self):
         if self.Table == self.TableT and self.Table is not None:
