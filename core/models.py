@@ -58,6 +58,10 @@ class Reservation (models.Model):
     isHighTraffic = models.BooleanField(default=False)
     Table = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
     TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
+    
+    def __str__(self):
+        return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum)
+
     def clean(self):
         if self.Table == self.TableT and self.Table is not None:
             raise ValidationError("You cannot combine the same table")
