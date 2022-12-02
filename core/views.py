@@ -23,7 +23,7 @@ def index(request):
     if(Tables.count() < 5):
         # Populate the table database.
         for i in range(10):
-            Table.objects.create(Capacity = random.randint(2,9),isReserved=False)
+            Table.objects.create(Capacity = random.randint(2,8),isReserved=False)
     return render(request, 'index.html')
 
 
