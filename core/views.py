@@ -263,12 +263,14 @@ def reserveTable(request, r_id):
             reservation.delete()
     
     else: # Multiple tables available.
-        qt = Table.objects.filter(isReserved=False)
-        for t in qt: # Iterate through available tables.
-            T=Table.objects.get(pk=t.id)
-            if T.Capacity < reservation.GuestNum:
-                T.isReserved = True
-                T.save()
+        qt = Table.objects.filter(isReserved=False).order_by('Capacity')
+        for t in qt: # Iterate through available tables smallest first to find best fit.
+            print("t: ", t)
+            #T=Table.objects.get(pk=t.id)
+            #print("T: ", T)
+            if t.Capacity < reservation.GuestNum:
+                t.isReserved = True
+                t.save()
         if Table.objects.filter(isReserved=False).count() <= 0:
             TableCombine = True
             ValidComboExists = False
