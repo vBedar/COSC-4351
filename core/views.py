@@ -19,6 +19,11 @@ def index(request):
         t.save()  
     #For those that quit half-way through the reservation process by hitting Home~ Victoria Bedar    
     Reservation.objects.filter(Table=None).delete()
+    Tables = Table.objects.all()
+    if(Table.objects.all().count() < 5):
+        # Populate the table database.
+        for i in range(10):
+            Table.objects.create(Capacity = random.randint(2,6),isReserved=False)
     return render(request, 'index.html')
 
 
