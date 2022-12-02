@@ -268,35 +268,52 @@ def reserveTable(request, r_id):
             reservation.delete()
     
     else: # Multiple tables available.
-        qt = Table.objects.filter(isReserved=False).order_by('Capacity')
+        freeTables = Table.objects.filter(isReserved=False).order_by('Capacity')
         # List of tables that belong to optimal table group.
         optimalTables = []
-        print("\t\nTables available for reservation.")
-        for t in qt: # Iterate through available tables smallest first to find best fit.
-            print("t: ", t)
+        TableCombine = False
+        ValidComboExists = False
+        print("\n\nNum guests: ", reservation.GuestNum)
+        print("Tables available for reservation.")
+        for t in freeTables: # Iterate through available tables smallest first to find best fit.
+            #print("t: ", t)
             #T=Table.objects.get(pk=t.id)
             #print("T: ", T)
-            if t.Capacity < reservation.GuestNum:
-                t.isReserved = True
-                t.save()
-        if Table.objects.filter(isReserved=False).count() <= 0:
-            TableCombine = True
-            ValidComboExists = False
-            for t in qt:
-                T1=Table.objects.get(pk=t.id)
-                for n in qt:
-                    T2=Table.objects.get(pk=n.id)
-                    if T1 != T2 and T1.Capacity + T2.Capacity >= reservation.GuestNum:
-                        ValidComboExists = True
-                        break
-                if ValidComboExists:
+            if(t.Capacity > reservation.GuestNum): # Smallest table that can seat reservation.
+                optimalTables.append(t)
+                break
+
+        # No single table can seat reservation. Add largest table to optimalTables.
+        if len(optimalTables) == 0:
+            optimalTables.append(freeTables.last())
+            TableCombine=True
+                    
+        # If second table required iterate through remaining tables again.
+        if(TableCombine):           
+            for t in freeTables:
+                # Skip table already selected.
+                if(t.id == optimalTables[0].id):
+                    continue
+                # If second table found, add to optimalTables.
+                if(optimalTables[0].Capacity + t.Capacity > reservation.GuestNum):
+                    t.isReserved = True
+                    t.save()
+                    optimalTables.append(t)
+                    ValidComboExists = True
                     break
+            
+            print("optimalTables: ", optimalTables)
+            
             if ValidComboExists:        
                 messages.warning(request, 'Table combining needed')
-                for t in qt:
-                    T=Table.objects.get(pk=t.id)
-                    T.isReserved=False
-                    T.save()
+                for t in Table.objects.all():
+                    if(t != optimalTables[0] and t != optimalTables[1]):
+                        t.isReserved = True
+                        t.save()
+                    else:
+                        t.isReserved = False
+                        t.save()
+                        print("t: ", t)                    
             else:
                 messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
             
