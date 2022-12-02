@@ -56,8 +56,8 @@ class Reservation (models.Model):
     Time = models.DateTimeField(validators=[date_validator])
     GuestNum = models.PositiveIntegerField()
     isHighTraffic = models.BooleanField(default=False)
-    Table = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
-    TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
+    Table = models.ForeignKey.one_to_many('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True)
+    #TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
     
     def __str__(self):
         return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum) + ' Table: ' + str(self.Table)
@@ -82,10 +82,10 @@ class ReservationForm (ModelForm):
             'Time':dateWidget()
         }
 
-class RTableForm (ModelForm):
-    class Meta:
-        model = Reservation
-        fields = ['Table', 'TableT']
+# class RTableForm (ModelForm):
+#     class Meta:
+#         model = Reservation
+#         fields = ['Table', 'TableT']
 
 # Tracks high traffic days that may change year to year.
 class HighTrafficDay(models.Model):
