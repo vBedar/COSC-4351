@@ -273,10 +273,10 @@ def reserveTable(request, r_id):
         freeTables = Table.objects.filter(isReserved=False).order_by('Capacity')
         # List of tables that belong to optimal table group.                
         
-        print("\n\nNum guests: ", reservation.GuestNum)
-        print("Tables available for reservation.")
+        # print("\n\nNum guests: ", reservation.GuestNum)
+        # print("Tables available for reservation.")
         for t in freeTables: # Iterate through available tables smallest first to find best fit.                        
-            print("t: ", t)
+            #print("t: ", t)
             if(t.Capacity >= reservation.GuestNum): # Smallest table that can seat reservation.
                 optimalTables.append(t)
                 break
@@ -286,7 +286,7 @@ def reserveTable(request, r_id):
             optimalTables.append(freeTables.last())
             TableCombine=True
                     
-        print("First optimal table: ", optimalTables[0])
+        #print("First optimal table: ", optimalTables[0])
         # If second table required iterate through remaining tables again.
         if(TableCombine):           
             for t in freeTables:
@@ -301,7 +301,7 @@ def reserveTable(request, r_id):
                     ValidComboExists = True
                     break
             
-            print("optimalTables: ", optimalTables)
+            #print("optimalTables: ", optimalTables)
             
             if ValidComboExists:        
                 messages.warning(request, 'Table combining needed')                    
