@@ -245,15 +245,15 @@ def reserveTable(request, r_id):
     if reservation.isHighTraffic:
         messages.info(request, "We're expecting a lot of traffic today. If you continue with your reservation, you'll be charged with a hold fee.")
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
-    q = Reservation.objects.filter(Time__gte = reservation.Time - timedelta(hours=1)).filter(Time__lte = reservation.Time + timedelta(hours=1))
-    for t in q: # Iterate through Reservations within 1 hour of current reservation.
+    resQuery = Reservation.objects.filter(Time__gte = reservation.Time - timedelta(hours=1)).filter(Time__lte = reservation.Time + timedelta(hours=1))
+    for otherRes in resQuery: # Iterate through Reservations within 1 hour of current reservation.
         # Set the tables of those reservations to unavailable.
-        if Table.objects.filter(pk=t.Table_id).exists():
-            T=Table.objects.get(pk=t.Table_id)
+        if Table.objects.filter(pk=otherRes.Table_id).exists():
+            T=Table.objects.get(pk=otherRes.Table_id)
             T.isReserved = True
             T.save()
-        if Table.objects.filter(pk=t.TableT_id).exists():
-            TT=Table.objects.get(pk=t.TableT_id)
+        if Table.objects.filter(pk=otherRes.TableT_id).exists():
+            TT=Table.objects.get(pk=otherRes.TableT_id)
             TT.isReserved = True
             TT.save()    
     # Check if there are any tables left available for the reservation.
