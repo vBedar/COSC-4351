@@ -23,7 +23,7 @@ def index(request):
     if(Tables.count() < 5):
         # Populate the table database.
         for i in range(10):
-            Table.objects.create(Capacity = random.randint(2,8),isReserved=False)
+            Table.objects.create(Capacity = random.randint(2,9),isReserved=False)
     return render(request, 'index.html')
 
 
@@ -229,7 +229,7 @@ class reservationPage(TemplateView):
             return True
         #TODO: Check if limited seating left on this date.
         r = Reservation.objects.filter(Time=date)
-        if(r.count() >= 1):
+        if(r.count() >= 30):
             return True
         return False
    
