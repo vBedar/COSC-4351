@@ -233,7 +233,12 @@ class reservationPage(TemplateView):
             return True
         return False
    
-
+"""
+Determine which tables are unavailable through other reservations. 
+Tables where isReserved = False are displayed to the user in the 
+RTableForm because of the lmit_choices_to attribute in the Table
+model.
+"""
 def reserveTable(request, r_id):
     reservation = Reservation.objects.get(pk=r_id)
     TableCombine=False
