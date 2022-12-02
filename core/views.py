@@ -269,6 +269,8 @@ def reserveTable(request, r_id):
     
     else: # Multiple tables available.
         qt = Table.objects.filter(isReserved=False).order_by('Capacity')
+        # List of tables that belong to optimal table group.
+        optimalTables = []
         print("\t\nTables available for reservation.")
         for t in qt: # Iterate through available tables smallest first to find best fit.
             print("t: ", t)
