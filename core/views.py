@@ -20,10 +20,10 @@ def index(request):
     #For those that quit half-way through the reservation process by hitting Home~ Victoria Bedar    
     Reservation.objects.filter(Table=None).delete()
     Tables = Table.objects.all()
-    if(Table.objects.all().count() < 5):
+    if(Tables.count() < 5):
         # Populate the table database.
         for i in range(10):
-            Table.objects.create(Capacity = random.randint(2,6),isReserved=False)
+            Table.objects.create(Capacity = random.randint(2,8),isReserved=False)
     return render(request, 'index.html')
 
 
@@ -241,7 +241,8 @@ def reserveTable(request, r_id):
         messages.info(request, "We're expecting a lot of traffic today. If you continue with your reservation, you'll be charged with a hold fee.")
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
     q = Reservation.objects.filter(Time__gte = reservation.Time - timedelta(hours=1)).filter(Time__lte = reservation.Time + timedelta(hours=1))
-    for t in q:
+    for t in q: # Iterate through Reservations within 1 hour of current reservation.
+        # Set the tables of those reservations to unavailable.
         if Table.objects.filter(pk=t.Table_id).exists():
             T=Table.objects.get(pk=t.Table_id)
             T.isReserved = True
@@ -250,17 +251,20 @@ def reserveTable(request, r_id):
             TT=Table.objects.get(pk=t.TableT_id)
             TT.isReserved = True
             TT.save()    
+    # Check if there are any tables left available for the reservation.
     if Table.objects.filter(isReserved=False).count() <= 0:
         messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
         reservation.delete()
+    # If only 1 table available, check if it can seat the reservation.
     elif Table.objects.filter(isReserved=False).count() == 1:
         t1 = Table.objects.get(isReserved=False)
         if t1.Capacity < reservation.GuestNum:
             messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
             reservation.delete()
-    else:
+    
+    else: # Multiple tables available.
         qt = Table.objects.filter(isReserved=False)
-        for t in qt:
+        for t in qt: # Iterate through available tables.
             T=Table.objects.get(pk=t.id)
             if T.Capacity < reservation.GuestNum:
                 T.isReserved = True
