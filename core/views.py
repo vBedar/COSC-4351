@@ -291,7 +291,7 @@ def reserveTable(request, r_id):
         if(TableCombine):           
             for t in freeTables:
                 # Skip table already selected.
-                if(t.id == optimalTables[0].id):
+                if(t in optimalTables):
                     continue
                 # If second table found, add to optimalTables.
                 if(optimalTables[0].Capacity + t.Capacity >= reservation.GuestNum):
