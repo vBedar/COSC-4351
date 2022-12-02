@@ -229,7 +229,7 @@ class reservationPage(TemplateView):
             return True
         #TODO: Check if limited seating left on this date.
         r = Reservation.objects.filter(Time=date)
-        if(r.count() >= 1):
+        if(r.count() >= 30):
             return True
         return False
    

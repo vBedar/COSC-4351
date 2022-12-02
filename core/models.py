@@ -35,6 +35,9 @@ class Profile (models.Model):
     pPhone = models.CharField(validators=[Phone_validator], max_length=17, null = True)
     pEmail = models.EmailField(max_length=100, null = True)
 
+    def __str__(self):
+        return 'Name: ' + str(self.Name) + ' Email: ' + str(self.pEmail) + ' Phone: ' + str(self.pPhone)  + ' Points: ' + str(self.Points) + ' Diner Number: ' + str(self.DinerNum) + ' Perferred Payment Method: ' + str(self.PaymentMethod) + ' Mailing address: ' + str(self.MstAddress) + ' ' + str(self.MCity) + ', ' + str(self.MState) + ' ' + str(self.MZip) + ' Billing Address: ' + str(self.BstAddress)  + ' ' + str(self.BCity) + ', ' + str(self.BState) + ' ' + str(self.BZip)
+
 #Table Model
 class Table (models.Model):
     Capacity = models.PositiveIntegerField(default=2)
@@ -60,7 +63,7 @@ class Reservation (models.Model):
     TableT = models.ForeignKey('Table', on_delete = models.CASCADE, limit_choices_to={'isReserved':False}, null=True, related_name='TableT', blank=True)
     
     def __str__(self):
-        return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum) + ' Table: ' + str(self.Table)
+        return str(self.Name) + ' ' + str(self.Phone) + ' ' + str(self.Email) + ' ' + str(self.Time) + ' Guest: ' + str(self.GuestNum) + ' Table: ' + str(self.Table) + ' Table2: ' + str(self.TableT)
 
     def clean(self):
         if self.Table == self.TableT and self.Table is not None:
