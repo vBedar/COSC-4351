@@ -242,6 +242,8 @@ model.
 def reserveTable(request, r_id):
     reservation = Reservation.objects.get(pk=r_id)
     TableCombine=False
+    ValidComboExists = False
+    optimalTables = []
     if reservation.isHighTraffic:
         messages.info(request, "We're expecting a lot of traffic today. If you continue with your reservation, you'll be charged with a hold fee.")
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
@@ -269,17 +271,13 @@ def reserveTable(request, r_id):
     
     else: # Multiple tables available.
         freeTables = Table.objects.filter(isReserved=False).order_by('Capacity')
-        # List of tables that belong to optimal table group.
-        optimalTables = []
-        TableCombine = False
-        ValidComboExists = False
+        # List of tables that belong to optimal table group.                
+        
         print("\n\nNum guests: ", reservation.GuestNum)
         print("Tables available for reservation.")
-        for t in freeTables: # Iterate through available tables smallest first to find best fit.
-            #print("t: ", t)
-            #T=Table.objects.get(pk=t.id)
-            #print("T: ", T)
-            if(t.Capacity > reservation.GuestNum): # Smallest table that can seat reservation.
+        for t in freeTables: # Iterate through available tables smallest first to find best fit.                        
+            print("t: ", t)
+            if(t.Capacity >= reservation.GuestNum): # Smallest table that can seat reservation.
                 optimalTables.append(t)
                 break
 
@@ -288,6 +286,7 @@ def reserveTable(request, r_id):
             optimalTables.append(freeTables.last())
             TableCombine=True
                     
+        print("First optimal table: ", optimalTables[0])
         # If second table required iterate through remaining tables again.
         if(TableCombine):           
             for t in freeTables:
@@ -295,7 +294,7 @@ def reserveTable(request, r_id):
                 if(t.id == optimalTables[0].id):
                     continue
                 # If second table found, add to optimalTables.
-                if(optimalTables[0].Capacity + t.Capacity > reservation.GuestNum):
+                if(optimalTables[0].Capacity + t.Capacity >= reservation.GuestNum):
                     t.isReserved = True
                     t.save()
                     optimalTables.append(t)
@@ -305,17 +304,21 @@ def reserveTable(request, r_id):
             print("optimalTables: ", optimalTables)
             
             if ValidComboExists:        
-                messages.warning(request, 'Table combining needed')
-                for t in Table.objects.all():
-                    if(t != optimalTables[0] and t != optimalTables[1]):
-                        t.isReserved = True
-                        t.save()
-                    else:
-                        t.isReserved = False
-                        t.save()
-                        print("t: ", t)                    
+                messages.warning(request, 'Table combining needed')                    
             else:
                 messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+        
+    # Set all tables to unavailable except for optimalTables.
+    for t in Table.objects.all():
+        if(t not in optimalTables):
+            #print("\nt NOT IN: ", t)
+            #print("opt_tables: ", optimalTables)
+            t.isReserved = True
+            t.save()
+        else:
+            #print("\nt IN: ", t)
+            t.isReserved = False
+            t.save()            
             
 
     if request.method == 'POST':
