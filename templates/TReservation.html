@@ -31,7 +31,7 @@
     <form class="editUser" method="post" action="">
         {% csrf_token %}
         {{ form.non_field_errors }}
-       <p>
+       <!-- <p>
         {{form.Table.errors}}
         <label for="{{form.Table.id_for_label}}">Table 1: </label>
         {{form.Table}}
@@ -42,7 +42,7 @@
             <label for="{{form.TableT.id_for_label}}">Table 2: </label>
             {{form.TableT}}
         </p>
-        {% endif %}
+        {% endif %} -->
         <input type="submit" value="Submit">
     </form>
 

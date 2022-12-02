@@ -177,8 +177,11 @@ class reservationPage(TemplateView):
                 reservation.isHighTraffic = True
             # else:
             #     print("Low traffic day reservation.")
-            
-            reservation.save()
+            if(self.TableAllocation()):
+                reservation.save()
+            else:
+                print("error allocating table")
+            #reservation.save()
             return redirect('/reservation/%d'%reservation.id)
             # reservation.Table = form.cleaned_data['Table']
             """ 
@@ -227,6 +230,19 @@ class reservationPage(TemplateView):
         if(r.count() >= 1):
             return True
         return False
+
+    """Check if table(s) are available to seat num_guests. Return True if available, False if not.
+        If True, reserve table(s) for guest."""
+    def TableAllocation(self):
+        # Get Reservations within 1 hour of current reservation.
+        otherRes = Reservation.objects.filter(Time__gte = self.Time - timedelta(hours=1)).filter(Time__lte = self.Time + timedelta(hours=1))
+        reservedTables = []
+        for otherReservation in otherRes: # Iterate through reservations
+            # Skip self check
+            if(otherReservation==self):
+                continue
+            # Store table id's in list
+            reservedTables.append(otherReservation.Table.id)        
    
 
 def reserveTable(request, r_id):
@@ -236,22 +252,23 @@ def reserveTable(request, r_id):
         messages.info(request, "We're expecting a lot of traffic today. If you continue with your reservation, you'll be charged with a hold fee.")
     #Set choice limit using Query (I would have limit_choices_to be limited by a function that calls self but that doesn't work) ~ Victoria Bedar
     q = Reservation.objects.filter(Time__gte = reservation.Time - timedelta(hours=1)).filter(Time__lte = reservation.Time + timedelta(hours=1))
-    for t in q:
+    for t in q: # Iterate through reservations within 1 hour of current proposed booking.
+        # Look for the tables of each reservation. Make sure .isReserved field is true.
         if Table.objects.filter(pk=t.Table_id).exists():
             T=Table.objects.get(pk=t.Table_id)
             T.isReserved = True
             T.save()
-        if Table.objects.filter(pk=t.TableT_id).exists():
+        if Table.objects.filter(pk=t.TableT_id).exists(): 
             TT=Table.objects.get(pk=t.TableT_id)
             TT.isReserved = True
-            TT.save()    
+            TT.save()
     if Table.objects.filter(isReserved=False).count() <= 0:
-        messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+        messages.warning(request, 'No Tables Available, Reservation Aborted. Please Click the Home Button and Try Again')
         reservation.delete()
     elif Table.objects.filter(isReserved=False).count() == 1:
         t1 = Table.objects.get(isReserved=False)
         if t1.Capacity < reservation.GuestNum:
-            messages.warning(request, 'No Tables Avalible, Reservation Aborted. Please Click the Home Button and Try Again')
+            messages.warning(request, 'No Tables Available, Reservation Aborted. Please Click the Home Button and Try Again')
             reservation.delete()
     else:
         qt = Table.objects.filter(isReserved=False)
@@ -309,6 +326,11 @@ def reserveTable(request, r_id):
     }
     return render(request, 'TReservation.html', context)
 
+"""Check if table is available at a specified time"""
+def isTableAvailableAtTime(table, time):
+    if Reservation.objects.filter(Table=table, Time=time).exists():
+        return False
+    return True
 
 def confirmation(request, r_id):
     reservation = Reservation.objects.get(pk=r_id)
